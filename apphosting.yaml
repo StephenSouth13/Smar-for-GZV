@@ -39,3 +39,20 @@ env:
     availability:
       - BUILD
       - RUNTIME
+
+  # Cloudinary (media storage). The API key is not particularly sensitive,
+  # but the secret must be set via Secret Manager, not plaintext:
+  #   firebase apphosting:secrets:set cloudinary-api-secret
+  # then grant the backend access when prompted.
+  - variable: CLOUDINARY_CLOUD_NAME
+    value: ddync0dht
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: CLOUDINARY_API_KEY
+    value: "287129361965435"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: CLOUDINARY_API_SECRET
+    secret: cloudinary-api-secret
