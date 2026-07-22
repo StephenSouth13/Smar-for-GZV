@@ -5,15 +5,27 @@
  *
  * Usage: npm run seed
  */
-import { config } from "dotenv";
-config({ path: ".env.local" });
-
 import { nanoid } from "nanoid";
 import { createSection, type SectionOf, type SectionType } from "../src/lib/schema/sections";
-import { savePage } from "../src/lib/data/pages";
-import { createProject } from "../src/lib/data/projects";
-import { createPost } from "../src/lib/data/posts";
-import { saveSiteSettings } from "../src/lib/data/settings";
+import type { PageInput, ProjectInput, PostInput, SettingsInput } from "../src/lib/schema/content";
+import { adminDb } from "./lib/admin";
+
+// Mirrors src/lib/data/{pages,projects,posts,settings}.ts, duplicated here
+// because those files import "server-only" and can only run inside Next.js.
+async function savePage(slug: string, data: Omit<PageInput, "slug">) {
+  await adminDb.collection("pages").doc(slug).set({ ...data, updatedAt: new Date().toISOString() });
+}
+async function createProject(data: ProjectInput) {
+  const now = new Date().toISOString();
+  await adminDb.collection("projects").add({ ...data, createdAt: now, updatedAt: now });
+}
+async function createPost(data: PostInput) {
+  const now = new Date().toISOString();
+  await adminDb.collection("posts").add({ ...data, createdAt: now, updatedAt: now });
+}
+async function saveSiteSettings(data: SettingsInput) {
+  await adminDb.collection("settings").doc("site").set(data);
+}
 
 const ph = (w: number, h: number, text: string) =>
   `https://placehold.co/${w}x${h}/39b54a/ffffff?text=${encodeURIComponent(text)}`;

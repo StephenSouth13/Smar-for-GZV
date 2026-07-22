@@ -7,10 +7,7 @@
  * Usage:
  *   npm run create-admin -- --email=you@gzv.one --password=xxxxxxxx --name="Your Name"
  */
-import { config } from "dotenv";
-config({ path: ".env.local" });
-
-import { adminAuth, adminDb } from "../src/lib/firebase/admin";
+import { adminAuth, adminDb } from "./lib/admin";
 
 function parseArgs() {
   const args = new Map<string, string>();

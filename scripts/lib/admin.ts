@@ -1,13 +1,18 @@
-import "server-only";
+/**
+ * Standalone Firebase Admin init for CLI scripts (seed, create-admin), run via
+ * tsx/plain Node — NOT through Next.js. Deliberately does not import
+ * "server-only" (unlike src/lib/firebase/admin.ts): that package always throws
+ * outside the Next.js server-component bundler, so scripts need their own copy.
+ */
 import { getApps, initializeApp, cert, applicationDefault, type App } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
-import { getStorage } from "firebase-admin/storage";
 
-// Works around a @google-cloud/firestore default: it enables OpenTelemetry
-// tracing unless told otherwise, which tries to auto-detect a GCP project ID
-// via Application Default Credentials (unrelated to our explicit service
-// account below) and throws when ADC isn't available.
+// Must be set before getFirestore() constructs its client below. Set here
+// (a plain statement, not an import) rather than relying solely on
+// .env.local + dotenv: esbuild/tsx hoists `import` statements above other
+// top-level code, so a dotenv config() call elsewhere in the entry file can
+// run *after* this module's imports already executed.
 process.env.FIRESTORE_ENABLE_TRACING ??= "false";
 
 function createAdminApp(): App {
@@ -18,8 +23,6 @@ function createAdminApp(): App {
   const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, "\n");
   const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
 
-  // Local dev: explicit service account credentials from .env.local.
-  // Production (Firebase App Hosting): falls back to the backend's default service account.
   if (clientEmail && privateKey) {
     return initializeApp({
       credential: cert({ projectId, clientEmail, privateKey }),
@@ -28,15 +31,10 @@ function createAdminApp(): App {
     });
   }
 
-  return initializeApp({
-    credential: applicationDefault(),
-    projectId,
-    storageBucket,
-  });
+  return initializeApp({ credential: applicationDefault(), projectId, storageBucket });
 }
 
 const adminApp = createAdminApp();
 
 export const adminAuth = getAuth(adminApp);
 export const adminDb = getFirestore(adminApp);
-export const adminStorage = getStorage(adminApp);

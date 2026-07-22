@@ -24,6 +24,10 @@
 .DS_Store
 *.pem
 
+# Firebase service account keys - never commit these
+*firebase-adminsdk*.json
+gzvmarketing-firebase-adminsdk-fbsvc-a6a3a84df4.json
+
 # debug
 npm-debug.log*
 yarn-debug.log*
