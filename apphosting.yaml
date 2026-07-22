@@ -1,0 +1,41 @@
+# Firebase App Hosting build/runtime config.
+# https://firebase.google.com/docs/app-hosting/configure
+#
+# NEXT_PUBLIC_* values are safe as plaintext (shipped to the browser).
+# The Admin SDK needs no explicit credentials here: App Hosting backends run as
+# their own service account with project access, so src/lib/firebase/admin.ts
+# falls back to applicationDefault() automatically in production.
+runConfig:
+  minInstances: 0
+
+env:
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyB3oflNPtZAmJwKxeXxIw83YtoiEiJ2DG4
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: gzvmarketing.firebaseapp.com
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: gzvmarketing
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: gzvmarketing.firebasestorage.app
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "775009259143"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: "1:775009259143:web:964a2edec523044bf93222"
+    availability:
+      - BUILD
+      - RUNTIME
