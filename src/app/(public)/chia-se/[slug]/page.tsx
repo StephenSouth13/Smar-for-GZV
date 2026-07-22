@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Container } from "@/components/public/Container";
 import { getPublishedPostBySlug } from "@/lib/data/posts";
+import { getSiteSettings } from "@/lib/data/settings";
+import { buildMetadata } from "@/lib/seo";
+import { cld } from "@/lib/image-url";
 
 export const dynamic = "force-dynamic";
 
@@ -19,12 +22,16 @@ function formatDate(iso: string) {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPublishedPostBySlug(slug);
-  if (!post) return {};
-  return {
-    title: post.seoTitle || post.title,
-    description: post.seoDescription || post.excerpt || undefined,
-  };
+  const [post, settings] = await Promise.all([getPublishedPostBySlug(slug), getSiteSettings()]);
+  if (!post) return buildMetadata({}, settings);
+  return buildMetadata(
+    {
+      ...post,
+      seoDescription: post.seoDescription || post.excerpt,
+      ogImageUrl: post.ogImageUrl || post.coverImageUrl,
+    },
+    settings,
+  );
 }
 
 export default async function PostDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -48,7 +55,14 @@ export default async function PostDetailPage({ params }: { params: Promise<{ slu
 
         {post.coverImageUrl && (
           <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-surface mb-10">
-            <Image src={post.coverImageUrl} alt={post.title} fill className="object-cover" unoptimized priority />
+            <Image
+              src={cld(post.coverImageUrl, { width: 1600, height: 900 })}
+              alt={post.title}
+              fill
+              className="object-cover"
+              unoptimized
+              priority
+            />
           </div>
         )}
 

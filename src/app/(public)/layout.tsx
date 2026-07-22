@@ -1,6 +1,7 @@
 import { Header } from "@/components/public/Header";
 import { Footer } from "@/components/public/Footer";
 import { FloatingContact } from "@/components/public/FloatingContact";
+import { ThemeVars } from "@/components/ThemeVars";
 import { getSiteSettings } from "@/lib/data/settings";
 
 // Content is CMS-managed via Firestore (Admin SDK), which needs live
@@ -13,7 +14,8 @@ export default async function PublicLayout({ children }: { children: React.React
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header settings={settings} />
+      <ThemeVars color={settings.themeColor} />
+      {settings.showHeader && <Header settings={settings} />}
       <main className="flex-1">{children}</main>
       <Footer settings={settings} />
       <FloatingContact settings={settings} />

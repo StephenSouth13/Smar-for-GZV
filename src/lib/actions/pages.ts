@@ -24,6 +24,8 @@ export async function savePageAction(originalSlug: string | null, data: PageInpu
     title: parsed.title,
     seoTitle: parsed.seoTitle,
     seoDescription: parsed.seoDescription,
+    seoKeywords: parsed.seoKeywords,
+    ogImageUrl: parsed.ogImageUrl,
     published: parsed.published,
     sections: parsed.sections as unknown as Section[],
   });

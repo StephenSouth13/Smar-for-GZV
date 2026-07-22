@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { cld } from "@/lib/image-url";
 import type { PostDoc } from "@/lib/data/posts";
 
 function formatDate(iso: string) {
@@ -22,7 +23,7 @@ export function PostCard({ post }: { post: PostDoc }) {
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface">
         {post.coverImageUrl ? (
           <Image
-            src={post.coverImageUrl}
+            src={cld(post.coverImageUrl, { width: 800, height: 500 })}
             alt={post.title}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"

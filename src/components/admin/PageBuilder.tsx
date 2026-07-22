@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
+import { ImageField } from "@/components/admin/ImageField";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +43,8 @@ type PageFormState = {
   title: string;
   seoTitle: string;
   seoDescription: string;
+  seoKeywords: string;
+  ogImageUrl: string;
   published: boolean;
   sections: Section[];
 };
@@ -52,6 +55,7 @@ function SortableSectionCard({
   expanded,
   onToggleExpand,
   onRemove,
+  onChangeMeta,
   onChangeData,
 }: {
   section: Section;
@@ -59,6 +63,7 @@ function SortableSectionCard({
   expanded: boolean;
   onToggleExpand: () => void;
   onRemove: () => void;
+  onChangeMeta: (patch: Pick<Partial<Section>, "title" | "hidden">) => void;
   onChangeData: (data: Section["data"]) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
@@ -80,13 +85,28 @@ function SortableSectionCard({
             >
               <GripVertical className="h-4 w-4" />
             </button>
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand/10 text-xs font-semibold text-brand-dark">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand/10 text-xs font-semibold text-brand-dark">
               {index + 1}
             </span>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-ink">{SECTION_TYPE_META[section.type].label}</div>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="text-sm font-semibold text-ink">{section.title || SECTION_TYPE_META[section.type].label}</div>
+                {section.hidden && (
+                  <span className="rounded-full bg-ink/10 px-2 py-0.5 text-[11px] font-medium text-ink-muted">Đang ẩn</span>
+                )}
+              </div>
               <div className="text-xs text-ink-muted truncate">{SECTION_TYPE_META[section.type].description}</div>
             </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="text-ink-muted"
+              onClick={() => onChangeMeta({ hidden: !section.hidden })}
+              aria-label={section.hidden ? "Hiện section" : "Ẩn section"}
+            >
+              {section.hidden ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </Button>
             <Button type="button" variant="ghost" size="sm" onClick={onToggleExpand}>
               {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </Button>
@@ -102,6 +122,20 @@ function SortableSectionCard({
           </div>
           {expanded && (
             <div className="border-t border-line/70 p-4 bg-surface/60">
+              <div className="mb-4 grid grid-cols-1 gap-3 rounded-lg border border-line/70 bg-white p-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                <div className="space-y-1.5">
+                  <Label>Tên section trong admin</Label>
+                  <Input
+                    value={section.title ?? ""}
+                    onChange={(e) => onChangeMeta({ title: e.target.value })}
+                    placeholder={SECTION_TYPE_META[section.type].label}
+                  />
+                </div>
+                <div className="flex items-center gap-3 pb-1">
+                  <Switch checked={!section.hidden} onCheckedChange={(checked) => onChangeMeta({ hidden: !checked })} />
+                  <span className="text-sm font-medium text-ink">{section.hidden ? "Đang ẩn" : "Đang hiện"}</span>
+                </div>
+              </div>
               <SectionEditor section={section} onChange={onChangeData} />
             </div>
           )}
@@ -118,6 +152,8 @@ export function PageBuilder({ page, isNew }: { page: PageDoc; isNew: boolean }) 
     title: page.title,
     seoTitle: page.seoTitle,
     seoDescription: page.seoDescription,
+    seoKeywords: page.seoKeywords,
+    ogImageUrl: page.ogImageUrl,
     published: page.published,
     sections: page.sections,
   });
@@ -140,6 +176,13 @@ export function PageBuilder({ page, isNew }: { page: PageDoc; isNew: boolean }) 
     setForm((f) => ({
       ...f,
       sections: f.sections.map((s) => (s.id === id ? ({ ...s, data } as Section) : s)),
+    }));
+  }
+
+  function updateSectionMeta(id: string, patch: Pick<Partial<Section>, "title" | "hidden">) {
+    setForm((f) => ({
+      ...f,
+      sections: f.sections.map((s) => (s.id === id ? ({ ...s, ...patch } as Section) : s)),
     }));
   }
 
@@ -204,6 +247,21 @@ export function PageBuilder({ page, isNew }: { page: PageDoc; isNew: boolean }) 
               onChange={(e) => setForm((f) => ({ ...f, seoDescription: e.target.value }))}
             />
           </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label>SEO keywords</Label>
+              <Input
+                value={form.seoKeywords}
+                onChange={(e) => setForm((f) => ({ ...f, seoKeywords: e.target.value }))}
+                placeholder="marketing, thiết kế website, GZV"
+              />
+            </div>
+            <ImageField
+              label="Ảnh OG / social share"
+              value={form.ogImageUrl}
+              onChange={(ogImageUrl) => setForm((f) => ({ ...f, ogImageUrl }))}
+            />
+          </div>
           <div className="flex items-center gap-3 pt-1">
             <Switch
               checked={form.published}
@@ -261,6 +319,7 @@ export function PageBuilder({ page, isNew }: { page: PageDoc; isNew: boolean }) 
                   expanded={expandedId === section.id}
                   onToggleExpand={() => setExpandedId(expandedId === section.id ? null : section.id)}
                   onRemove={() => removeSection(section.id)}
+                  onChangeMeta={(patch) => updateSectionMeta(section.id, patch)}
                   onChangeData={(data) => updateSectionData(section.id, data)}
                 />
               ))}

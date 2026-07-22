@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, PhoneCall } from "lucide-react";
 import { Container } from "./Container";
+import { cld } from "@/lib/image-url";
 import type { SettingsInput } from "@/lib/schema/content";
 
 export function Header({ settings }: { settings: SettingsInput }) {
@@ -16,7 +17,14 @@ export function Header({ settings }: { settings: SettingsInput }) {
       <Container className="flex h-16 sm:h-20 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           {settings.logoUrl ? (
-            <Image src={settings.logoUrl} alt={settings.siteName} width={40} height={40} className="h-9 w-9 object-contain" unoptimized />
+            <Image
+              src={cld(settings.logoUrl, { width: 80, height: 80, crop: "fit" })}
+              alt={settings.siteName}
+              width={40}
+              height={40}
+              className="h-9 w-9 object-contain"
+              unoptimized
+            />
           ) : (
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-white font-bold">
               {settings.siteName?.[0] ?? "G"}

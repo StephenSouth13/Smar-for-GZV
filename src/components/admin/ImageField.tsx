@@ -2,33 +2,44 @@
 
 import { useRef, useState, useTransition } from "react";
 import Image from "next/image";
-import { ImagePlus, FolderOpen, X, Loader2 } from "lucide-react";
+import { ImagePlus, FolderOpen, X, Loader2, Crop } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { uploadMediaAction, listMediaAction } from "@/lib/actions/media";
+import { cld } from "@/lib/image-url";
+import { ImageCropDialog } from "@/components/admin/ImageCropDialog";
 import type { MediaItem } from "@/lib/data/media";
 
 export function ImageField({
   label,
   value,
   onChange,
+  aspect,
 }: {
   label?: string;
   value: string;
   onChange: (url: string) => void;
+  /** Fixed crop ratio (width/height), e.g. 16/9 for a hero, 1 for a logo/avatar. Omit to crop freely. */
+  aspect?: number;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, startUpload] = useTransition();
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [pendingFile, setPendingFile] = useState<{ src: string; name: string; type: string } | null>(null);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const formData = new FormData();
-    formData.append("file", file);
+    setPendingFile({ src: URL.createObjectURL(file), name: file.name, type: file.type || "image/jpeg" });
+    e.target.value = "";
+  }
+
+  function uploadBlob(blob: Blob, filename: string) {
     startUpload(async () => {
+      const formData = new FormData();
+      formData.append("file", blob, filename);
       const result = await uploadMediaAction(formData);
       if (result.error) {
         toast.error(result.error);
@@ -36,7 +47,6 @@ export function ImageField({
       }
       if (result.item) onChange(result.item.url);
     });
-    e.target.value = "";
   }
 
   return (
@@ -45,7 +55,14 @@ export function ImageField({
       <div className="flex items-start gap-3">
         <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-surface">
           {value ? (
-            <Image src={value} alt="" width={80} height={80} className="h-full w-full object-cover" unoptimized />
+            <Image
+              src={cld(value, { width: 160, height: 160 })}
+              alt=""
+              width={80}
+              height={80}
+              className="h-full w-full object-cover"
+              unoptimized
+            />
           ) : (
             <ImagePlus className="h-6 w-6 text-ink-muted" />
           )}
@@ -68,6 +85,17 @@ export function ImageField({
               Thư viện
             </Button>
             {value && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setPendingFile({ src: value, name: "recrop.jpg", type: "image/jpeg" })}
+              >
+                <Crop className="h-4 w-4 mr-1" />
+                Cắt lại
+              </Button>
+            )}
+            {value && (
               <Button type="button" variant="ghost" size="sm" onClick={() => onChange("")}>
                 <X className="h-4 w-4 mr-1" />
                 Xoá
@@ -85,6 +113,17 @@ export function ImageField({
           setLibraryOpen(false);
         }}
       />
+      {pendingFile && (
+        <ImageCropDialog
+          imageSrc={pendingFile.src}
+          aspect={aspect}
+          onCancel={() => setPendingFile(null)}
+          onDone={(blob) => {
+            uploadBlob(blob, pendingFile.name);
+            setPendingFile(null);
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -130,7 +169,14 @@ function MediaLibraryDialog({
                 onClick={() => onSelect(item.url)}
                 className="aspect-square overflow-hidden rounded-lg border border-line hover:border-brand transition-colors"
               >
-                <Image src={item.url} alt="" width={160} height={160} className="h-full w-full object-cover" unoptimized />
+                <Image
+                  src={cld(item.url, { width: 320, height: 320 })}
+                  alt=""
+                  width={160}
+                  height={160}
+                  className="h-full w-full object-cover"
+                  unoptimized
+                />
               </button>
             ))}
           </div>

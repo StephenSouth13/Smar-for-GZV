@@ -1,25 +1,50 @@
 import "server-only";
 import { adminDb } from "@/lib/firebase/admin";
-import type { Section } from "@/lib/schema/sections";
+import { sectionDataSchemas, type Section, type SectionType } from "@/lib/schema/sections";
 
 export type PageDoc = {
   slug: string;
   title: string;
   seoTitle: string;
   seoDescription: string;
+  seoKeywords: string;
+  ogImageUrl: string;
   published: boolean;
   sections: Section[];
   updatedAt: string;
 };
 
+/**
+ * Older documents predate fields added to a section's schema later on (e.g.
+ * `customFields` on contactForm) and would otherwise crash renderers that
+ * assume the current shape. Re-parsing through the current schema fills in
+ * any missing fields with their defaults.
+ */
+function normalizeSectionData(section: Section): Section {
+  const schema = sectionDataSchemas[section.type as SectionType];
+  if (!schema) return section;
+  const result = schema.safeParse(section.data);
+  return result.success ? ({ ...section, data: result.data } as Section) : section;
+}
+
 function toPageDoc(slug: string, data: FirebaseFirestore.DocumentData): PageDoc {
+  const sections = ((data.sections ?? []) as Section[]).map((section) =>
+    normalizeSectionData({
+      ...section,
+      title: section.title ?? "",
+      hidden: section.hidden ?? false,
+    }),
+  );
+
   return {
     slug,
     title: data.title ?? "",
     seoTitle: data.seoTitle ?? "",
     seoDescription: data.seoDescription ?? "",
+    seoKeywords: data.seoKeywords ?? "",
+    ogImageUrl: data.ogImageUrl ?? "",
     published: !!data.published,
-    sections: (data.sections ?? []) as Section[],
+    sections,
     updatedAt: data.updatedAt ?? "",
   };
 }

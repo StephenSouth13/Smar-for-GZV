@@ -22,7 +22,7 @@ export function AboutPreviewEditor({
         <Textarea rows={4} value={data.body} onChange={(e) => onChange({ ...data, body: e.target.value })} />
       </Field>
       <Field label="Hình ảnh">
-        <ImageField value={data.imageUrl} onChange={(url) => onChange({ ...data, imageUrl: url })} />
+        <ImageField aspect={4 / 3} value={data.imageUrl} onChange={(url) => onChange({ ...data, imageUrl: url })} />
       </Field>
       <Field label="Liên kết">
         <ListEditor

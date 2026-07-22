@@ -3,15 +3,16 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard,
-  FileText,
   Briefcase,
-  Newspaper,
-  Image as ImageIcon,
-  Settings,
-  LogOut,
   ExternalLink,
+  FileText,
+  Image as ImageIcon,
+  LayoutDashboard,
+  LogOut,
+  Mail,
   Menu,
+  Newspaper,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -23,11 +24,20 @@ const NAV_ITEMS = [
   { href: "/admin/pages", label: "Trang & Section", icon: FileText },
   { href: "/admin/projects", label: "Dự án", icon: Briefcase },
   { href: "/admin/posts", label: "Bài viết", icon: Newspaper },
+  { href: "/admin/leads", label: "Tin nhắn liên hệ", icon: Mail },
   { href: "/admin/media", label: "Thư viện ảnh", icon: ImageIcon },
   { href: "/admin/settings", label: "Cài đặt chung", icon: Settings },
 ];
 
-function NavLinks({ pathname }: { pathname: string }) {
+function BrandMark() {
+  return (
+    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand text-base font-extrabold text-white shadow-sm shadow-brand/25">
+      G
+    </div>
+  );
+}
+
+function NavLinks({ pathname, unreadLeads = 0 }: { pathname: string; unreadLeads?: number }) {
   return (
     <>
       <nav className="flex-1 px-3 py-4 space-y-1">
@@ -39,14 +49,24 @@ function NavLinks({ pathname }: { pathname: string }) {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
                 active
-                  ? "bg-brand/10 text-brand-dark"
+                  ? "bg-brand text-white shadow-sm shadow-brand/25"
                   : "text-ink-muted hover:bg-surface hover:text-ink",
               )}
             >
               <Icon className="h-4 w-4" />
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {item.href === "/admin/leads" && unreadLeads > 0 && (
+                <span
+                  className={cn(
+                    "flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-semibold",
+                    active ? "bg-white/25 text-white" : "bg-brand text-white",
+                  )}
+                >
+                  {unreadLeads}
+                </span>
+              )}
             </Link>
           );
         })}
@@ -55,7 +75,7 @@ function NavLinks({ pathname }: { pathname: string }) {
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-ink-muted hover:bg-surface hover:text-ink"
+          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-ink-muted hover:bg-surface hover:text-ink"
         >
           <ExternalLink className="h-4 w-4" />
           Xem website
@@ -65,7 +85,15 @@ function NavLinks({ pathname }: { pathname: string }) {
   );
 }
 
-export function AdminShell({ profile, children }: { profile: AdminProfile; children: React.ReactNode }) {
+export function AdminShell({
+  profile,
+  unreadLeads = 0,
+  children,
+}: {
+  profile: AdminProfile;
+  unreadLeads?: number;
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -76,47 +104,54 @@ export function AdminShell({ profile, children }: { profile: AdminProfile; child
   }
 
   return (
-    <div className="flex min-h-screen bg-surface">
-      <aside className="hidden md:flex w-64 flex-col border-r border-line/60 bg-white">
-        <div className="flex items-center gap-2 px-5 h-16 border-b border-line/60">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-white font-bold">
-            G
+    <div className="min-h-screen bg-[linear-gradient(180deg,#f5faf6_0%,#eef4f1_45%,#f8faf9_100%)]">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 flex-col border-r border-line/60 bg-white/90 shadow-sm backdrop-blur md:flex">
+        <div className="flex h-20 items-center gap-3 border-b border-line/60 px-5">
+          <BrandMark />
+          <div>
+            <div className="text-base font-bold text-ink">GZV Admin</div>
+            <div className="text-xs font-medium text-ink-muted">Trung tâm nội dung</div>
           </div>
-          <span className="font-semibold text-ink">GZV Admin</span>
         </div>
-        <NavLinks pathname={pathname} />
+        <NavLinks pathname={pathname} unreadLeads={unreadLeads} />
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 border-b border-line/60 bg-white flex items-center justify-between px-4 md:px-6">
-          <div className="flex items-center gap-2 md:hidden">
+      <div className="min-w-0 md:pl-72">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-line/60 bg-white/85 px-4 backdrop-blur md:px-8">
+          <div className="flex items-center gap-3 md:hidden">
             <Sheet>
               <SheetTrigger render={<Button variant="ghost" size="icon" />}>
                 <Menu className="h-5 w-5" />
               </SheetTrigger>
-              <SheetContent side="left" className="w-64 p-0 flex flex-col">
+              <SheetContent side="left" className="w-72 p-0 flex flex-col">
                 <SheetTitle className="sr-only">Menu quản trị</SheetTitle>
-                <div className="flex items-center gap-2 px-5 h-16 border-b border-line/60">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-white font-bold">
-                    G
+                <div className="flex h-20 items-center gap-3 border-b border-line/60 px-5">
+                  <BrandMark />
+                  <div>
+                    <div className="text-base font-bold text-ink">GZV Admin</div>
+                    <div className="text-xs font-medium text-ink-muted">Trung tâm nội dung</div>
                   </div>
-                  <span className="font-semibold text-ink">GZV Admin</span>
                 </div>
-                <NavLinks pathname={pathname} />
+                <NavLinks pathname={pathname} unreadLeads={unreadLeads} />
               </SheetContent>
             </Sheet>
             <span className="font-semibold text-ink">GZV Admin</span>
           </div>
-          <div className="flex-1" />
+          <div className="hidden md:block">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-dark">Quản trị website</div>
+            <div className="text-sm text-ink-muted">Cập nhật nội dung, SEO và giao diện public</div>
+          </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-ink-muted hidden sm:inline">{profile.name}</span>
+            <div className="hidden rounded-full border border-line/70 bg-white px-3 py-1.5 text-sm font-medium text-ink sm:block">
+              {profile.name}
+            </div>
             <Button variant="ghost" size="sm" onClick={handleLogout}>
               <LogOut className="h-4 w-4 mr-1" />
               Đăng xuất
             </Button>
           </div>
         </header>
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto">{children}</main>
+        <main className="mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-8">{children}</main>
       </div>
     </div>
   );

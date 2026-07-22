@@ -18,6 +18,8 @@ function toPostDoc(id: string, data: FirebaseFirestore.DocumentData): PostDoc {
     publishedAt: data.publishedAt ?? "",
     seoTitle: data.seoTitle ?? "",
     seoDescription: data.seoDescription ?? "",
+    seoKeywords: data.seoKeywords ?? "",
+    ogImageUrl: data.ogImageUrl ?? "",
     createdAt: data.createdAt ?? "",
     updatedAt: data.updatedAt ?? "",
   };

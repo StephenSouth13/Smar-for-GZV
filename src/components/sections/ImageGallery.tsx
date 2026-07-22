@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Container } from "@/components/public/Container";
+import { cld } from "@/lib/image-url";
 import type { SectionDataMap } from "@/lib/schema/sections";
 
 export function ImageGallery({ data }: { data: SectionDataMap["imageGallery"] }) {
@@ -12,7 +13,13 @@ export function ImageGallery({ data }: { data: SectionDataMap["imageGallery"] })
           {data.images.map((img, i) => (
             <figure key={i} className="overflow-hidden rounded-xl bg-surface">
               <div className="relative aspect-square">
-                <Image src={img.imageUrl} alt={img.caption || ""} fill className="object-cover" unoptimized />
+                <Image
+                  src={cld(img.imageUrl, { width: 600, height: 600 })}
+                  alt={img.caption || ""}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
               </div>
               {img.caption && <figcaption className="p-2 text-center text-xs text-ink-muted">{img.caption}</figcaption>}
             </figure>

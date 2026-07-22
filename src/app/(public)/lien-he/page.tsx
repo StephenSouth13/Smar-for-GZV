@@ -40,6 +40,7 @@ export default async function ContactPage() {
           heading: "Yêu cầu tư vấn",
           subheading: "Để lại thông tin, đội ngũ GZV sẽ liên hệ tư vấn trong thời gian sớm nhất.",
           submitEmail: settings.contactEmail,
+          customFields: [],
         }}
       />
     </div>

@@ -23,6 +23,7 @@ const BLANK: ProjectInput = {
   coverImageUrl: "",
   gallery: [],
   client: "",
+  category: "",
   tags: [],
   summary: "",
   content: "",
@@ -31,9 +32,17 @@ const BLANK: ProjectInput = {
   published: false,
   seoTitle: "",
   seoDescription: "",
+  seoKeywords: "",
+  ogImageUrl: "",
 };
 
-export function ProjectForm({ project }: { project?: ProjectDoc }) {
+export function ProjectForm({
+  project,
+  categories = [],
+}: {
+  project?: ProjectDoc;
+  categories?: { label: string; slug: string }[];
+}) {
   const router = useRouter();
   const [form, setForm] = useState<ProjectInput>(project ?? BLANK);
   const [tagsInput, setTagsInput] = useState(form.tags.join(", "));
@@ -43,8 +52,14 @@ export function ProjectForm({ project }: { project?: ProjectDoc }) {
   function handleSave() {
     const payload: ProjectInput = {
       ...form,
-      tags: tagsInput.split(",").map((t) => t.trim()).filter(Boolean),
-      gallery: galleryInput.split("\n").map((l) => l.trim()).filter(Boolean),
+      tags: tagsInput
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
+      gallery: galleryInput
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean),
     };
 
     startSaving(async () => {
@@ -66,8 +81,8 @@ export function ProjectForm({ project }: { project?: ProjectDoc }) {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardContent className="pt-6 space-y-4">
+      <Card className="border-line/70 bg-white shadow-sm">
+        <CardContent className="pt-6 space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label>Tên dự án</Label>
@@ -85,22 +100,51 @@ export function ProjectForm({ project }: { project?: ProjectDoc }) {
             </div>
           </div>
 
-          <ImageField label="Ảnh bìa" value={form.coverImageUrl} onChange={(url) => setForm((f) => ({ ...f, coverImageUrl: url }))} />
+          <ImageField
+            aspect={4 / 3}
+            label="Ảnh bìa"
+            value={form.coverImageUrl}
+            onChange={(url) => setForm((f) => ({ ...f, coverImageUrl: url }))}
+          />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1.5">
               <Label>Khách hàng</Label>
               <Input value={form.client} onChange={(e) => setForm((f) => ({ ...f, client: e.target.value }))} />
             </div>
             <div className="space-y-1.5">
-              <Label>Dịch vụ (phân cách bằng dấu phẩy)</Label>
-              <Input value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} placeholder="Content, Design, Website" />
+              <Label>Danh mục</Label>
+              <select
+                value={form.category}
+                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                <option value="">Chưa chọn</option>
+                {categories.map((category) => (
+                  <option key={category.slug} value={category.slug}>
+                    {category.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Thứ tự</Label>
+              <Input
+                type="number"
+                value={form.order}
+                onChange={(e) => setForm((f) => ({ ...f, order: Number(e.target.value) || 0 }))}
+              />
             </div>
           </div>
 
           <div className="space-y-1.5">
+            <Label>Dịch vụ / tag</Label>
+            <Input value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} placeholder="Content, Design, Website" />
+          </div>
+
+          <div className="space-y-1.5">
             <Label>Tóm tắt</Label>
-            <Textarea rows={2} value={form.summary} onChange={(e) => setForm((f) => ({ ...f, summary: e.target.value }))} />
+            <Textarea rows={3} value={form.summary} onChange={(e) => setForm((f) => ({ ...f, summary: e.target.value }))} />
           </div>
 
           <div className="space-y-1.5">
@@ -113,8 +157,8 @@ export function ProjectForm({ project }: { project?: ProjectDoc }) {
           </div>
 
           <div className="space-y-1.5">
-            <Label>Thư viện ảnh (mỗi dòng một URL ảnh)</Label>
-            <Textarea rows={3} value={galleryInput} onChange={(e) => setGalleryInput(e.target.value)} placeholder="https://..." />
+            <Label>Thư viện ảnh</Label>
+            <Textarea rows={4} value={galleryInput} onChange={(e) => setGalleryInput(e.target.value)} placeholder="Mỗi dòng một URL ảnh" />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -137,6 +181,19 @@ export function ProjectForm({ project }: { project?: ProjectDoc }) {
               <Label>SEO description</Label>
               <Input value={form.seoDescription} onChange={(e) => setForm((f) => ({ ...f, seoDescription: e.target.value }))} />
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label>SEO keywords</Label>
+              <Input value={form.seoKeywords} onChange={(e) => setForm((f) => ({ ...f, seoKeywords: e.target.value }))} />
+            </div>
+            <ImageField
+              aspect={1200 / 630}
+              label="Ảnh OG / social share"
+              value={form.ogImageUrl}
+              onChange={(ogImageUrl) => setForm((f) => ({ ...f, ogImageUrl }))}
+            />
           </div>
         </CardContent>
       </Card>

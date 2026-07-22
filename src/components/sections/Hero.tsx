@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/public/Container";
+import { cld } from "@/lib/image-url";
 import type { SectionDataMap } from "@/lib/schema/sections";
 
 export function Hero({ data }: { data: SectionDataMap["hero"] }) {
@@ -10,7 +11,7 @@ export function Hero({ data }: { data: SectionDataMap["hero"] }) {
       style={
         data.backgroundImageUrl
           ? {
-              backgroundImage: `linear-gradient(180deg, rgba(50,55,60,.88), rgba(50,55,60,.92)), url(${data.backgroundImageUrl})`,
+              backgroundImage: `linear-gradient(180deg, rgba(50,55,60,.88), rgba(50,55,60,.92)), url(${cld(data.backgroundImageUrl, { width: 1920, height: 1080 })})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }

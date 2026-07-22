@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/public/Container";
+import { cld } from "@/lib/image-url";
 import type { SectionDataMap } from "@/lib/schema/sections";
 
 export function AboutPreview({ data }: { data: SectionDataMap["aboutPreview"] }) {
@@ -29,7 +30,13 @@ export function AboutPreview({ data }: { data: SectionDataMap["aboutPreview"] })
         </div>
         <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-surface">
           {data.imageUrl ? (
-            <Image src={data.imageUrl} alt={data.heading} fill className="object-cover" unoptimized />
+            <Image
+              src={cld(data.imageUrl, { width: 800, height: 600 })}
+              alt={data.heading}
+              fill
+              className="object-cover"
+              unoptimized
+            />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-ink-muted text-sm">Chưa có ảnh</div>
           )}

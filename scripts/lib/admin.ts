@@ -1,5 +1,5 @@
 /**
- * Standalone Firebase Admin init for CLI scripts (seed, create-admin), run via
+ * Standalone Firebase Admin init for CLI scripts (create-admin), run via
  * tsx/plain Node — NOT through Next.js. Deliberately does not import
  * "server-only" (unlike src/lib/firebase/admin.ts): that package always throws
  * outside the Next.js server-component bundler, so scripts need their own copy.

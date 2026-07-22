@@ -12,6 +12,7 @@ function toProjectDoc(id: string, data: FirebaseFirestore.DocumentData): Project
     coverImageUrl: data.coverImageUrl ?? "",
     gallery: data.gallery ?? [],
     client: data.client ?? "",
+    category: data.category ?? "",
     tags: data.tags ?? [],
     summary: data.summary ?? "",
     content: data.content ?? "",
@@ -20,14 +21,17 @@ function toProjectDoc(id: string, data: FirebaseFirestore.DocumentData): Project
     published: !!data.published,
     seoTitle: data.seoTitle ?? "",
     seoDescription: data.seoDescription ?? "",
+    seoKeywords: data.seoKeywords ?? "",
+    ogImageUrl: data.ogImageUrl ?? "",
     createdAt: data.createdAt ?? "",
     updatedAt: data.updatedAt ?? "",
   };
 }
 
-export async function listProjects(opts?: { publishedOnly?: boolean; limit?: number }): Promise<ProjectDoc[]> {
+export async function listProjects(opts?: { publishedOnly?: boolean; limit?: number; category?: string }): Promise<ProjectDoc[]> {
   let query: FirebaseFirestore.Query = adminDb.collection("projects").orderBy("order", "asc");
   if (opts?.publishedOnly) query = query.where("published", "==", true);
+  if (opts?.category) query = query.where("category", "==", opts.category);
   if (opts?.limit) query = query.limit(opts.limit);
   const snap = await query.get();
   return snap.docs.map((d) => toProjectDoc(d.id, d.data()));

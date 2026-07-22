@@ -6,6 +6,8 @@ const BLANK_PAGE: PageDoc = {
   title: "",
   seoTitle: "",
   seoDescription: "",
+  seoKeywords: "",
+  ogImageUrl: "",
   published: false,
   sections: [],
   updatedAt: "",

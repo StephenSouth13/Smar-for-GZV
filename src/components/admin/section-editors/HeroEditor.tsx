@@ -26,7 +26,11 @@ export function HeroEditor({
         />
       </Field>
       <Field label="Ảnh nền">
-        <ImageField value={data.backgroundImageUrl} onChange={(url) => onChange({ ...data, backgroundImageUrl: url })} />
+        <ImageField
+          aspect={16 / 9}
+          value={data.backgroundImageUrl}
+          onChange={(url) => onChange({ ...data, backgroundImageUrl: url })}
+        />
       </Field>
       <div className="grid grid-cols-2 gap-4">
         <Field label="Chữ nút CTA">

@@ -26,6 +26,8 @@ export function SectionEditor({
     case "logoGrid":
       return <LogoGridEditor data={section.data} onChange={onChange} />;
     case "projectGrid":
+    case "projectBrandGrid":
+    case "projectProductGrid":
       return <ProjectGridEditor data={section.data} onChange={onChange} />;
     case "articleGrid":
       return <ArticleGridEditor data={section.data} onChange={onChange} />;

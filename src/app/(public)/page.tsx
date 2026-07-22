@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import { getPublishedPageBySlug } from "@/lib/data/pages";
+import { getSiteSettings } from "@/lib/data/settings";
+import { buildMetadata } from "@/lib/seo";
 import { SectionList } from "@/components/sections/SectionRenderer";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await getPublishedPageBySlug("home");
-  if (!page) return {};
-  return {
-    title: page.seoTitle || page.title,
-    description: page.seoDescription || undefined,
-  };
+  const [page, settings] = await Promise.all([getPublishedPageBySlug("home"), getSiteSettings()]);
+  return buildMetadata(page ?? {}, settings);
 }
 
 export default async function HomePage() {

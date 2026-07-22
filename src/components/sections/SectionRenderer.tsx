@@ -12,6 +12,8 @@ import { Stats } from "./Stats";
 import { Testimonials } from "./Testimonials";
 
 export function SectionRenderer({ section }: { section: Section }) {
+  if (section.hidden) return null;
+
   switch (section.type) {
     case "hero":
       return <Hero data={section.data} />;
@@ -20,6 +22,8 @@ export function SectionRenderer({ section }: { section: Section }) {
     case "logoGrid":
       return <LogoGrid data={section.data} />;
     case "projectGrid":
+    case "projectBrandGrid":
+    case "projectProductGrid":
       return <ProjectGrid data={section.data} />;
     case "articleGrid":
       return <ArticleGrid data={section.data} />;

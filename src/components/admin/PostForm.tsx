@@ -29,6 +29,8 @@ const BLANK: PostInput = {
   publishedAt: new Date().toISOString().slice(0, 10),
   seoTitle: "",
   seoDescription: "",
+  seoKeywords: "",
+  ogImageUrl: "",
 };
 
 export function PostForm({ post }: { post?: PostDoc }) {
@@ -75,7 +77,12 @@ export function PostForm({ post }: { post?: PostDoc }) {
             </div>
           </div>
 
-          <ImageField label="Ảnh bìa" value={form.coverImageUrl} onChange={(url) => setForm((f) => ({ ...f, coverImageUrl: url }))} />
+          <ImageField
+            aspect={16 / 10}
+            label="Ảnh bìa"
+            value={form.coverImageUrl}
+            onChange={(url) => setForm((f) => ({ ...f, coverImageUrl: url }))}
+          />
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1.5">
@@ -124,6 +131,18 @@ export function PostForm({ post }: { post?: PostDoc }) {
               <Label>SEO description</Label>
               <Input value={form.seoDescription} onChange={(e) => setForm((f) => ({ ...f, seoDescription: e.target.value }))} />
             </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label>SEO keywords</Label>
+              <Input value={form.seoKeywords} onChange={(e) => setForm((f) => ({ ...f, seoKeywords: e.target.value }))} />
+            </div>
+            <ImageField
+              aspect={1200 / 630}
+              label="Ảnh OG / social share"
+              value={form.ogImageUrl}
+              onChange={(ogImageUrl) => setForm((f) => ({ ...f, ogImageUrl }))}
+            />
           </div>
         </CardContent>
       </Card>

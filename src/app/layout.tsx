@@ -3,6 +3,8 @@ import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { getSiteSettings } from "@/lib/data/settings";
+import { buildMetadata } from "@/lib/seo";
 
 const beVietnamPro = Be_Vietnam_Pro({
   variable: "--font-sans",
@@ -10,14 +12,16 @@ const beVietnamPro = Be_Vietnam_Pro({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "GZV - Giải pháp Marketing toàn diện",
-    template: "%s | GZV",
-  },
-  description:
-    "GZV đồng hành cùng doanh nghiệp với giải pháp marketing toàn diện: Content, Design, Media, Performance, Website.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    ...buildMetadata({}, settings),
+    title: {
+      default: settings.seoTitle || settings.siteName,
+      template: `%s | ${settings.siteName}`,
+    },
+  };
+}
 
 export default function RootLayout({
   children,

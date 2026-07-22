@@ -1,36 +1,44 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/public/Container";
-import { PostCard } from "@/components/public/PostCard";
+import { PostFilterGrid } from "@/components/public/PostFilterGrid";
 import { listPosts } from "@/lib/data/posts";
+import { getSiteSettings } from "@/lib/data/settings";
+import { buildMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Chia sẻ",
-  description: "Kiến thức và cập nhật mới nhất về marketing từ GZV.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return buildMetadata(
+    {
+      title: "Chia sẻ",
+      seoDescription: "Kiến thức và cập nhật mới nhất về marketing từ GZV.",
+      seoKeywords: "marketing, kiến thức marketing, chia sẻ GZV",
+    },
+    settings,
+  );
+}
 
 export default async function PostsPage() {
   const posts = await listPosts({ publishedOnly: true });
 
   return (
-    <div className="py-16">
-      <Container>
-        <div className="text-center mb-12">
-          <span className="text-sm font-semibold uppercase tracking-wide text-brand">Chia sẻ</span>
-          <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-ink">Kiến thức & cập nhật</h1>
-          <p className="mt-3 text-ink-muted max-w-xl mx-auto">Góc nhìn và kinh nghiệm marketing từ đội ngũ GZV.</p>
-        </div>
-        {posts.length === 0 ? (
-          <p className="text-center text-ink-muted py-16">Chưa có bài viết nào.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
+    <div className="bg-surface/60">
+      <section className="border-b border-line/70 bg-white py-14 sm:py-18">
+        <Container>
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="text-sm font-semibold uppercase tracking-[0.18em] text-brand-dark">Chia sẻ</span>
+            <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">Kiến thức & cập nhật</h1>
+            <p className="mt-4 text-base leading-7 text-ink-muted">Góc nhìn và kinh nghiệm marketing từ đội ngũ GZV.</p>
           </div>
-        )}
-      </Container>
+        </Container>
+      </section>
+
+      <section className="py-10 sm:py-12">
+        <Container>
+          <PostFilterGrid posts={posts} />
+        </Container>
+      </section>
     </div>
   );
 }

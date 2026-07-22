@@ -31,7 +31,7 @@ export function TestimonialsEditor({
                 <Input placeholder="Tên khách hàng" value={item.author} onChange={(e) => update({ author: e.target.value })} />
                 <Input placeholder="Chức vụ / công ty" value={item.role} onChange={(e) => update({ role: e.target.value })} />
               </div>
-              <ImageField label="Ảnh đại diện" value={item.avatarUrl} onChange={(url) => update({ avatarUrl: url })} />
+              <ImageField aspect={1} label="Ảnh đại diện" value={item.avatarUrl} onChange={(url) => update({ avatarUrl: url })} />
             </div>
           )}
         />

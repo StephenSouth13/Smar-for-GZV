@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Quote } from "lucide-react";
 import { Container } from "@/components/public/Container";
+import { cld } from "@/lib/image-url";
 import type { SectionDataMap } from "@/lib/schema/sections";
 
 export function Testimonials({ data }: { data: SectionDataMap["testimonials"] }) {
@@ -17,7 +18,13 @@ export function Testimonials({ data }: { data: SectionDataMap["testimonials"] })
               <figcaption className="mt-5 flex items-center gap-3">
                 <div className="relative h-10 w-10 overflow-hidden rounded-full bg-brand/10">
                   {item.avatarUrl && (
-                    <Image src={item.avatarUrl} alt={item.author} fill className="object-cover" unoptimized />
+                    <Image
+                      src={cld(item.avatarUrl, { width: 80, height: 80, gravity: "face" })}
+                      alt={item.author}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
                   )}
                 </div>
                 <div>
