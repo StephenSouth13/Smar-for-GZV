@@ -6,8 +6,10 @@ export const heroDataSchema = z.object({
   backgroundImageUrl: z.string().default(""),
   ctaText: z.string().default(""),
   ctaLink: z.string().default(""),
-  /** When true, render only the banner image full-bleed — no heading/subheading/CTA overlay. */
+  /** When true, render only the banner image — no heading/subheading/CTA overlay. */
   imageOnly: z.boolean().default(false),
+  /** Only meaningful when imageOnly. False (default): banner sits inside the same width as sections below it. True: banner spans the full viewport width. */
+  imageFullBleed: z.boolean().default(false),
   headingColor: z.string().default(""),
   subheadingColor: z.string().default(""),
 });

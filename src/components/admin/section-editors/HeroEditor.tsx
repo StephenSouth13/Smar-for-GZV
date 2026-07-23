@@ -61,6 +61,18 @@ export function HeroEditor({
         <Switch checked={data.imageOnly} onCheckedChange={(imageOnly) => onChange({ ...data, imageOnly })} />
       </div>
 
+      {data.imageOnly && (
+        <div className="flex items-center justify-between rounded-lg border border-line/70 bg-surface/70 p-4">
+          <div>
+            <div className="font-medium text-ink">Ảnh tràn viền toàn màn hình</div>
+            <div className="text-sm text-ink-muted">
+              Tắt (mặc định): banner rộng bằng các section bên dưới. Bật: banner tràn hết chiều ngang màn hình.
+            </div>
+          </div>
+          <Switch checked={data.imageFullBleed} onCheckedChange={(imageFullBleed) => onChange({ ...data, imageFullBleed })} />
+        </div>
+      )}
+
       <Field label={data.imageOnly ? "Ảnh banner" : "Ảnh nền"}>
         <ImageField
           aspect={data.imageOnly ? undefined : 16 / 9}
