@@ -33,8 +33,6 @@ export function SectionRenderer({ section }: { section: Section }) {
       content = <LogoGrid data={section.data} />;
       break;
     case "projectGrid":
-    case "projectBrandGrid":
-    case "projectProductGrid":
       content = <ProjectGrid data={section.data} />;
       break;
     case "articleGrid":

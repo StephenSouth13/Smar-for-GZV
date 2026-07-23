@@ -103,8 +103,6 @@ export const sectionDataSchemas = {
   aboutPreview: aboutPreviewDataSchema,
   logoGrid: logoGridDataSchema,
   projectGrid: projectGridDataSchema,
-  projectBrandGrid: projectGridDataSchema,
-  projectProductGrid: projectGridDataSchema,
   articleGrid: articleGridDataSchema,
   cta: ctaDataSchema,
   contactForm: contactFormDataSchema,
@@ -140,9 +138,7 @@ export const SECTION_TYPE_META: Record<SectionType, { label: string; description
   hero: { label: "Hero", description: "Banner lớn đầu trang với tiêu đề và nút CTA" },
   aboutPreview: { label: "Giới thiệu ngắn", description: "Đoạn mô tả kèm ảnh và liên kết" },
   logoGrid: { label: "Logo khách hàng", description: "Hiển thị logo khách hàng/đối tác" },
-  projectGrid: { label: "Dự án nổi bật", description: "Danh sách dự án tự động hoặc chọn tay" },
-  projectBrandGrid: { label: "Dự án Nhân hiệu", description: "Section dự án theo danh mục Nhân hiệu" },
-  projectProductGrid: { label: "Dự án Phẩm hiệu", description: "Section dự án theo danh mục Phẩm hiệu" },
+  projectGrid: { label: "Dự án theo danh mục", description: "Danh sách dự án tự động hoặc chọn tay, lọc theo danh mục bất kỳ" },
   articleGrid: { label: "Bài viết mới nhất", description: "Danh sách bài viết tự động hoặc chọn tay" },
   cta: { label: "Kêu gọi hành động", description: "Khối nhấn mạnh thông điệp kèm nút bấm" },
   contactForm: { label: "Form liên hệ", description: "Form thu thập thông tin khách hàng" },
@@ -155,14 +151,6 @@ export const SECTION_TYPE_META: Record<SectionType, { label: string; description
 export const SECTION_TYPES = Object.keys(SECTION_TYPE_META) as SectionType[];
 
 export function defaultSectionData<T extends SectionType>(type: T): SectionDataMap[T] {
-  if (type === "projectBrandGrid") {
-    return projectGridDataSchema.parse({ heading: "Dự án Nhân hiệu", category: "du-an-nhan-hieu" }) as SectionDataMap[T];
-  }
-
-  if (type === "projectProductGrid") {
-    return projectGridDataSchema.parse({ heading: "Dự án Phẩm hiệu", category: "du-an-pham-hieu" }) as SectionDataMap[T];
-  }
-
   return sectionDataSchemas[type].parse({}) as SectionDataMap[T];
 }
 

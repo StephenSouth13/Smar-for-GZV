@@ -32,8 +32,15 @@ export function ImageField({
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setPendingFile({ src: URL.createObjectURL(file), name: file.name, type: file.type || "image/jpeg" });
     e.target.value = "";
+    // No fixed aspect declared (e.g. client logos, pre-designed banners) —
+    // forcing a crop here would cut off part of images that don't happen to
+    // match an arbitrary ratio. Upload the file as-is.
+    if (aspect === undefined) {
+      uploadBlob(file, file.name);
+      return;
+    }
+    setPendingFile({ src: URL.createObjectURL(file), name: file.name, type: file.type || "image/jpeg" });
   }
 
   function uploadBlob(blob: Blob, filename: string) {
@@ -58,7 +65,14 @@ export function ImageField({
       <div className="flex items-start gap-3">
         <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-surface">
           {value ? (
-            <Image src={cld(value, { width: 160, height: 160 })} alt="" width={80} height={80} className="h-full w-full object-cover" unoptimized />
+            <Image
+              src={cld(value, { width: 160, height: 160, crop: aspect === undefined ? "fit" : "fill" })}
+              alt=""
+              width={80}
+              height={80}
+              className={aspect === undefined ? "h-full w-full object-contain p-1" : "h-full w-full object-cover"}
+              unoptimized
+            />
           ) : (
             <ImagePlus className="h-6 w-6 text-ink-muted" />
           )}
@@ -74,7 +88,7 @@ export function ImageField({
               <FolderOpen className="mr-1 h-4 w-4" />
               Thư viện
             </Button>
-            {value && (
+            {value && aspect !== undefined && (
               <Button type="button" variant="outline" size="sm" onClick={() => setPendingFile({ src: value, name: "recrop.jpg", type: "image/jpeg" })}>
                 <Crop className="mr-1 h-4 w-4" />
                 Cắt lại

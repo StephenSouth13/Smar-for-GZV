@@ -36,7 +36,7 @@ export function LogoGridEditor({
           emptyLabel="Chưa có logo khách hàng nào."
           renderItem={(item, update) => (
             <div className="space-y-3">
-              <ImageField aspect={2 / 1} label="Logo khách hàng" value={item.imageUrl} onChange={(url) => update({ imageUrl: url })} />
+              <ImageField label="Logo khách hàng" value={item.imageUrl} onChange={(url) => update({ imageUrl: url })} />
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Input placeholder="Tên khách hàng" value={item.name} onChange={(e) => update({ name: e.target.value })} />
                 <Input placeholder="Liên kết (tùy chọn)" value={item.link} onChange={(e) => update({ link: e.target.value })} />

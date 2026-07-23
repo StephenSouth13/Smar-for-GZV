@@ -10,10 +10,7 @@ import { listProjectCategoriesAction } from "@/lib/actions/settings";
 import type { SettingsInput } from "@/lib/schema/content";
 import type { SectionDataMap } from "@/lib/schema/sections";
 
-type ProjectGridData =
-  | SectionDataMap["projectGrid"]
-  | SectionDataMap["projectBrandGrid"]
-  | SectionDataMap["projectProductGrid"];
+type ProjectGridData = SectionDataMap["projectGrid"];
 
 export function ProjectGridEditor({
   data,

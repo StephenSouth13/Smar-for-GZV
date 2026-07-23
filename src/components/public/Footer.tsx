@@ -14,12 +14,6 @@ const DEFAULT_QUICK_LINKS = [
   { label: "Liên hệ", href: "/lien-he" },
 ];
 
-const DEFAULT_SERVICE_LINKS = [
-  { label: "Dự án nổi bật", href: "/du-an" },
-  { label: "Dự án Nhân hiệu", href: "/du-an?category=du-an-nhan-hieu" },
-  { label: "Dự án Phẩm hiệu", href: "/du-an?category=du-an-pham-hieu" },
-];
-
 function FooterLinks({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
     <div>
@@ -38,7 +32,11 @@ function FooterLinks({ title, links }: { title: string; links: { label: string; 
 export function Footer({ settings }: { settings: SettingsInput }) {
   const year = new Date().getFullYear();
   const quickLinks = settings.footerQuickLinks.length > 0 ? settings.footerQuickLinks : settings.headerMenu.length > 0 ? settings.headerMenu : DEFAULT_QUICK_LINKS;
-  const serviceLinks = settings.footerServiceLinks.length > 0 ? settings.footerServiceLinks : DEFAULT_SERVICE_LINKS;
+  const defaultServiceLinks = [
+    { label: "Dự án nổi bật", href: "/du-an" },
+    ...settings.projectCategories.map((category) => ({ label: category.label, href: `/du-an?category=${category.slug}` })),
+  ];
+  const serviceLinks = settings.footerServiceLinks.length > 0 ? settings.footerServiceLinks : defaultServiceLinks;
   const footerLogo = settings.footerLogoUrl || settings.logoUrl;
   const description =
     settings.footerDescription ||

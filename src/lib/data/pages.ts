@@ -28,17 +28,29 @@ function normalizeSectionData(section: Section): Section {
   return result.success ? ({ ...section, data: result.data } as Section) : section;
 }
 
+// `projectBrandGrid`/`projectProductGrid` used to be dedicated section types
+// hardcoded to the "Nhân hiệu"/"Phẩm hiệu" categories. They were merged into
+// the generic `projectGrid` (category picked from the editable category
+// list). Old pages may still have sections saved with these type strings —
+// remap them so they keep rendering instead of silently disappearing.
+const LEGACY_SECTION_TYPE_ALIASES: Record<string, SectionType> = {
+  projectBrandGrid: "projectGrid",
+  projectProductGrid: "projectGrid",
+};
+
 function toPageDoc(slug: string, data: FirebaseFirestore.DocumentData): PageDoc {
-  const sections = ((data.sections ?? []) as Section[]).map((section) =>
-    normalizeSectionData({
+  const sections = ((data.sections ?? []) as Section[]).map((section) => {
+    const type = LEGACY_SECTION_TYPE_ALIASES[section.type as string] ?? section.type;
+    return normalizeSectionData({
       ...section,
+      type,
       title: section.title ?? "",
       hidden: section.hidden ?? false,
       backgroundColor: section.backgroundColor ?? "",
       textColor: section.textColor ?? "",
       accentColor: section.accentColor ?? "",
-    }),
-  );
+    } as Section);
+  });
 
   return {
     slug,

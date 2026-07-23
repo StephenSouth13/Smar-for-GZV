@@ -6,10 +6,7 @@ import { listProjects, listProjectsByIds } from "@/lib/data/projects";
 import { getSiteSettings } from "@/lib/data/settings";
 import type { SectionDataMap } from "@/lib/schema/sections";
 
-type ProjectGridData =
-  | SectionDataMap["projectGrid"]
-  | SectionDataMap["projectBrandGrid"]
-  | SectionDataMap["projectProductGrid"];
+type ProjectGridData = SectionDataMap["projectGrid"];
 
 export async function ProjectGrid({ data }: { data: ProjectGridData }) {
   const projects =

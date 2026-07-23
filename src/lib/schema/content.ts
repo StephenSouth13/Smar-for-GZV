@@ -127,6 +127,7 @@ export const settingsSchema = z.object({
     .default([
       { label: "Dự án Nhân hiệu", slug: "du-an-nhan-hieu" },
       { label: "Dự án Phẩm hiệu", slug: "du-an-pham-hieu" },
+      { label: "Dự án Thương hiệu", slug: "du-an-thuong-hieu" },
     ]),
   postCategories: z
     .array(categorySchema)
