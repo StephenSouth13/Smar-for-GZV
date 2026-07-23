@@ -46,6 +46,13 @@ export async function getPostById(id: string): Promise<PostDoc | null> {
   return toPostDoc(id, doc.data()!);
 }
 
+// Slugs back the public /chia-se/[slug] route; a duplicate would make one of
+// the two posts silently unreachable (Firestore query just picks one).
+export async function isPostSlugTaken(slug: string, excludeId?: string): Promise<boolean> {
+  const snap = await adminDb.collection("posts").where("slug", "==", slug).limit(2).get();
+  return snap.docs.some((doc) => doc.id !== excludeId);
+}
+
 // generateMetadata() and the page body both need this per request; cache()
 // dedupes them into a single Firestore read.
 export const getPublishedPostBySlug = cache(async (slug: string): Promise<PostDoc | null> => {

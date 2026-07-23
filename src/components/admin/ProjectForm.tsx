@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ImageField } from "@/components/admin/ImageField";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { slugify } from "@/lib/utils/slug";
+import { useUnsavedChangesWarning } from "@/lib/hooks/useUnsavedChangesWarning";
 import type { ProjectInput } from "@/lib/schema/content";
 import type { ProjectDoc } from "@/lib/data/projects";
 import { createProjectAction, updateProjectAction } from "@/lib/actions/projects";
@@ -48,6 +49,10 @@ export function ProjectForm({
   const [tagsInput, setTagsInput] = useState(form.tags.join(", "));
   const [galleryInput, setGalleryInput] = useState(form.gallery.join("\n"));
   const [saving, startSaving] = useTransition();
+  const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify({ form, tagsInput, galleryInput }));
+
+  const currentSnapshot = JSON.stringify({ form, tagsInput, galleryInput });
+  useUnsavedChangesWarning(currentSnapshot !== savedSnapshot);
 
   function handleSave() {
     const payload: ProjectInput = {
@@ -67,10 +72,12 @@ export function ProjectForm({
         if (project) {
           await updateProjectAction(project.id, payload);
           toast.success("Đã lưu dự án.");
+          setSavedSnapshot(currentSnapshot);
           router.refresh();
         } else {
           const { id } = await createProjectAction(payload);
           toast.success("Đã tạo dự án.");
+          setSavedSnapshot(currentSnapshot);
           router.push(`/admin/projects/${id}`);
         }
       } catch (err) {

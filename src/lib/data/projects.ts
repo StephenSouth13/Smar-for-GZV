@@ -51,6 +51,13 @@ export async function getProjectById(id: string): Promise<ProjectDoc | null> {
   return toProjectDoc(id, doc.data()!);
 }
 
+// Slugs back the public /du-an/[slug] route; a duplicate would make one of
+// the two projects silently unreachable (Firestore query just picks one).
+export async function isProjectSlugTaken(slug: string, excludeId?: string): Promise<boolean> {
+  const snap = await adminDb.collection("projects").where("slug", "==", slug).limit(2).get();
+  return snap.docs.some((doc) => doc.id !== excludeId);
+}
+
 // generateMetadata() and the page body both need this per request; cache()
 // dedupes them into a single Firestore read.
 export const getPublishedProjectBySlug = cache(async (slug: string): Promise<ProjectDoc | null> => {
@@ -70,6 +77,10 @@ export async function updateProject(id: string, data: ProjectInput) {
     .collection("projects")
     .doc(id)
     .set({ ...data, updatedAt: new Date().toISOString() }, { merge: true });
+}
+
+export async function updateProjectOrder(id: string, order: number) {
+  await adminDb.collection("projects").doc(id).set({ order, updatedAt: new Date().toISOString() }, { merge: true });
 }
 
 export async function deleteProject(id: string) {

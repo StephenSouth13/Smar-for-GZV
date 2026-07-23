@@ -113,7 +113,7 @@ export function ImageField({
   );
 }
 
-function MediaLibraryDialog({
+export function MediaLibraryDialog({
   open,
   onOpenChange,
   onSelect,

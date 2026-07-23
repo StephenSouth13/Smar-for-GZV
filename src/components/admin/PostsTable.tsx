@@ -1,15 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { ImageOff, Newspaper, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PostRowActions } from "@/components/admin/PostRowActions";
+import { updatePostAction } from "@/lib/actions/posts";
 import { cld } from "@/lib/image-url";
 import { cn } from "@/lib/utils";
 import type { PostDoc } from "@/lib/data/posts";
-import type { SettingsInput } from "@/lib/schema/content";
+import type { PostInput, SettingsInput } from "@/lib/schema/content";
 
 function formatDate(iso: string) {
   if (!iso) return "";
@@ -18,6 +21,30 @@ function formatDate(iso: string) {
   } catch {
     return "";
   }
+}
+
+function PublishToggle({ post }: { post: PostDoc }) {
+  const [pending, startToggle] = useTransition();
+
+  function toggle(published: boolean) {
+    startToggle(async () => {
+      try {
+        await updatePostAction(post.id, { ...post, published } as PostInput);
+        toast.success(published ? "Đã xuất bản bài viết." : "Đã chuyển về bản nháp.");
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Cập nhật thất bại.");
+      }
+    });
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Switch checked={post.published} disabled={pending} onCheckedChange={toggle} />
+      <Badge variant={post.published ? "default" : "secondary"} className={post.published ? "bg-brand" : ""}>
+        {post.published ? "Đã xuất bản" : "Nháp"}
+      </Badge>
+    </div>
+  );
 }
 
 export function PostsTable({ posts, categories }: { posts: PostDoc[]; categories: SettingsInput["postCategories"] }) {
@@ -133,12 +160,10 @@ export function PostsTable({ posts, categories }: { posts: PostDoc[]; categories
                   <TableCell className="text-ink-muted">{post.author || "—"}</TableCell>
                   <TableCell className="text-ink-muted">{formatDate(post.publishedAt) || "—"}</TableCell>
                   <TableCell>
-                    <Badge variant={post.published ? "default" : "secondary"} className={post.published ? "bg-brand" : ""}>
-                      {post.published ? "Đã xuất bản" : "Nháp"}
-                    </Badge>
+                    <PublishToggle post={post} />
                   </TableCell>
                   <TableCell>
-                    <PostRowActions id={post.id} title={post.title} />
+                    <PostRowActions id={post.id} title={post.title} slug={post.slug} published={post.published} />
                   </TableCell>
                 </TableRow>
               ))}

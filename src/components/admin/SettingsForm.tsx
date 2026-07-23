@@ -17,6 +17,7 @@ import { SOCIAL_PLATFORMS } from "@/lib/schema/content";
 import { SOCIAL_META } from "@/lib/social-icons";
 import { saveSiteSettingsAction } from "@/lib/actions/settings";
 import { slugify } from "@/lib/utils/slug";
+import { useUnsavedChangesWarning } from "@/lib/hooks/useUnsavedChangesWarning";
 
 const THEME_PRESETS = [
   {
@@ -91,6 +92,10 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
     footerDescription: settings.footerDescription || settings.footerText,
   });
   const [saving, startSaving] = useTransition();
+  const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify(form));
+
+  const currentSnapshot = JSON.stringify(form);
+  useUnsavedChangesWarning(currentSnapshot !== savedSnapshot);
 
   function handleSave() {
     startSaving(async () => {
@@ -100,8 +105,9 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
           footerText: form.footerDescription || form.footerText,
         });
         toast.success("Đã lưu cài đặt.");
-      } catch {
-        toast.error("Lưu thất bại.");
+        setSavedSnapshot(currentSnapshot);
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Lưu thất bại.");
       }
     });
   }

@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ImageField } from "@/components/admin/ImageField";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { slugify } from "@/lib/utils/slug";
+import { useUnsavedChangesWarning } from "@/lib/hooks/useUnsavedChangesWarning";
 import type { PostInput } from "@/lib/schema/content";
 import type { PostDoc } from "@/lib/data/posts";
 import { createPostAction, updatePostAction } from "@/lib/actions/posts";
@@ -43,6 +44,10 @@ export function PostForm({
   const router = useRouter();
   const [form, setForm] = useState<PostInput>(post ?? BLANK);
   const [saving, startSaving] = useTransition();
+  const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify(form));
+
+  const currentSnapshot = JSON.stringify(form);
+  useUnsavedChangesWarning(currentSnapshot !== savedSnapshot);
 
   function handleSave() {
     startSaving(async () => {
@@ -50,10 +55,12 @@ export function PostForm({
         if (post) {
           await updatePostAction(post.id, form);
           toast.success("Đã lưu bài viết.");
+          setSavedSnapshot(currentSnapshot);
           router.refresh();
         } else {
           const { id } = await createPostAction(form);
           toast.success("Đã tạo bài viết.");
+          setSavedSnapshot(currentSnapshot);
           router.push(`/admin/posts/${id}`);
         }
       } catch (err) {
