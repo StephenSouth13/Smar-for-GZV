@@ -94,6 +94,9 @@ export function ProjectGridEditor({
             value={data.limit}
             onChange={(e) => onChange({ ...data, limit: Number(e.target.value) || 1 })}
           />
+          <p className="mt-1.5 text-xs text-ink-muted">
+            Dự án đánh dấu &quot;Nổi bật&quot; (ghim) trong /admin/projects sẽ luôn hiển thị trước, phần còn lại lấy theo thứ tự đã sắp xếp.
+          </p>
         </Field>
       ) : (
         <Field label="Chọn dự án">

@@ -24,6 +24,7 @@ const BLANK: ProjectInput = {
   coverImageUrl: "",
   gallery: [],
   client: "",
+  liveUrl: "",
   category: "",
   tags: [],
   summary: "",
@@ -142,6 +143,18 @@ export function ProjectForm({
                 onChange={(e) => setForm((f) => ({ ...f, order: Number(e.target.value) || 0 }))}
               />
             </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Link website dự án thực tế (tuỳ chọn)</Label>
+            <Input
+              value={form.liveUrl}
+              onChange={(e) => setForm((f) => ({ ...f, liveUrl: e.target.value }))}
+              placeholder="https://quachthanhlong.com"
+            />
+            <p className="text-xs text-ink-muted">
+              Nếu có, ảnh bìa trên trang /du-an sẽ dẫn thẳng tới link này. Nếu để trống, ảnh bìa dẫn tới trang chi tiết dự án.
+            </p>
           </div>
 
           <div className="space-y-1.5">

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { uploadMediaAction, listMediaAction } from "@/lib/actions/media";
 import { cld } from "@/lib/image-url";
+import { resizeImageIfNeeded } from "@/lib/crop-image";
 import type { MediaItem } from "@/lib/data/media";
 import { ImageCropDialog } from "./ImageCropDialog";
 
@@ -35,28 +36,35 @@ export function ImageField({
     e.target.value = "";
     // No fixed aspect declared (e.g. client logos, pre-designed banners) —
     // forcing a crop here would cut off part of images that don't happen to
-    // match an arbitrary ratio. Upload the file as-is.
+    // match an arbitrary ratio. Skip cropping, but still downscale oversized
+    // source files (design-tool exports are often 10-20MB) so they don't
+    // get rejected by the upload size cap.
     if (aspect === undefined) {
-      uploadBlob(file, file.name);
+      startUpload(async () => {
+        const blob = await resizeImageIfNeeded(file);
+        await doUpload(blob, file.name);
+      });
       return;
     }
     setPendingFile({ src: URL.createObjectURL(file), name: file.name, type: file.type || "image/jpeg" });
   }
 
+  async function doUpload(blob: Blob, filename: string) {
+    const formData = new FormData();
+    formData.append("file", blob, filename);
+    const result = await uploadMediaAction(formData);
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    }
+    if (result.item) {
+      onChange(result.item.url);
+      toast.success("Đã tải ảnh lên.");
+    }
+  }
+
   function uploadBlob(blob: Blob, filename: string) {
-    startUpload(async () => {
-      const formData = new FormData();
-      formData.append("file", blob, filename);
-      const result = await uploadMediaAction(formData);
-      if (result.error) {
-        toast.error(result.error);
-        return;
-      }
-      if (result.item) {
-        onChange(result.item.url);
-        toast.success("Đã tải ảnh lên.");
-      }
-    });
+    startUpload(() => doUpload(blob, filename));
   }
 
   return (

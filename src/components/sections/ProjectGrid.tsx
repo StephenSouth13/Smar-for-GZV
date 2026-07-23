@@ -9,12 +9,15 @@ import type { SectionDataMap } from "@/lib/schema/sections";
 type ProjectGridData = SectionDataMap["projectGrid"];
 
 export async function ProjectGrid({ data }: { data: ProjectGridData }) {
-  const projects =
-    data.mode === "manual"
-      ? await listProjectsByIds(data.projectIds)
-      : await listProjects({ publishedOnly: true, limit: data.limit, category: data.category });
-
-  const visible = data.mode === "manual" ? projects.filter((p) => p.published) : projects;
+  let visible;
+  if (data.mode === "manual") {
+    visible = (await listProjectsByIds(data.projectIds)).filter((p) => p.published);
+  } else {
+    // Fetch unlimited so featured ("ghim") projects can be pinned to the
+    // front even if they'd otherwise fall past the display limit, then slice.
+    const projects = await listProjects({ publishedOnly: true, category: data.category });
+    visible = [...projects].sort((a, b) => Number(b.featured) - Number(a.featured)).slice(0, data.limit);
+  }
   if (visible.length === 0) return null;
 
   const settings = await getSiteSettings();

@@ -43,6 +43,7 @@ export const projectSchema = z.object({
   coverImageUrl: z.string().default(""),
   gallery: z.array(z.string()).default([]),
   client: z.string().default(""),
+  liveUrl: z.string().default(""),
   category: z.string().default(""),
   tags: z.array(z.string()).default([]),
   summary: z.string().default(""),

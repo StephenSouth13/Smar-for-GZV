@@ -9,19 +9,17 @@ export function Hero({ data }: { data: SectionDataMap["hero"] }) {
   if (data.imageOnly && data.backgroundImageUrl) {
     return (
       <section className="bg-white">
-        <Container className="px-0 sm:px-0 lg:px-0">
-          <Link href={data.ctaLink || "#"} className={data.ctaLink ? "block" : "pointer-events-none block"}>
-            <Image
-              src={cld(data.backgroundImageUrl, { width: 1920 })}
-              alt={data.heading || "Banner"}
-              width={1920}
-              height={800}
-              className="h-auto w-full"
-              unoptimized
-              priority
-            />
-          </Link>
-        </Container>
+        <Link href={data.ctaLink || "#"} className={data.ctaLink ? "block" : "pointer-events-none block"}>
+          <Image
+            src={cld(data.backgroundImageUrl, { width: 1920 })}
+            alt={data.heading || "Banner"}
+            width={1920}
+            height={800}
+            className="h-auto w-full"
+            unoptimized
+            priority
+          />
+        </Link>
       </section>
     );
   }

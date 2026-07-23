@@ -13,6 +13,7 @@ function toProjectDoc(id: string, data: FirebaseFirestore.DocumentData): Project
     coverImageUrl: data.coverImageUrl ?? "",
     gallery: data.gallery ?? [],
     client: data.client ?? "",
+    liveUrl: data.liveUrl ?? "",
     category: data.category ?? "",
     tags: data.tags ?? [],
     summary: data.summary ?? "",
