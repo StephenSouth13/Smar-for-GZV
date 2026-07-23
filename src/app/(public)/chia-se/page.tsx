@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PostsPage() {
-  const posts = await listPosts({ publishedOnly: true });
+  const [posts, settings] = await Promise.all([listPosts({ publishedOnly: true }), getSiteSettings()]);
 
   return (
     <div className="bg-surface/60">
@@ -37,7 +37,7 @@ export default async function PostsPage() {
 
       <section className="py-10 sm:py-12">
         <Container>
-          <PostFilterGrid posts={posts} />
+          <PostFilterGrid posts={posts} categories={settings.postCategories} />
         </Container>
       </section>
     </div>

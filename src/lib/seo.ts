@@ -44,7 +44,7 @@ export function buildMetadata(source: SeoSource, settings: SettingsInput): Metad
     description,
     keywords: keywords.length > 0 ? keywords : undefined,
     alternates: canonical ? { canonical } : undefined,
-    icons: settings.faviconUrl ? { icon: settings.faviconUrl, shortcut: settings.faviconUrl } : undefined,
+    icons: { icon: settings.faviconUrl || "/gzv-logo.png", shortcut: settings.faviconUrl || "/gzv-logo.png" },
     openGraph: {
       title,
       description,

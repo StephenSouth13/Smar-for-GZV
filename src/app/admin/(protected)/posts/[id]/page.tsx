@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import { getPostById } from "@/lib/data/posts";
+import { getSiteSettings } from "@/lib/data/settings";
 import { PostForm } from "@/components/admin/PostForm";
 
 export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const post = await getPostById(id);
+  const [post, settings] = await Promise.all([getPostById(id), getSiteSettings()]);
   if (!post) notFound();
 
   return (
@@ -13,7 +14,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
         <h1 className="text-2xl font-bold text-ink">Chỉnh sửa bài viết</h1>
         <p className="text-ink-muted mt-1">{post.title}</p>
       </div>
-      <PostForm post={post} />
+      <PostForm post={post} categories={settings.postCategories} />
     </div>
   );
 }

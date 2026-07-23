@@ -33,7 +33,13 @@ const BLANK: PostInput = {
   ogImageUrl: "",
 };
 
-export function PostForm({ post }: { post?: PostDoc }) {
+export function PostForm({
+  post,
+  categories = [],
+}: {
+  post?: PostDoc;
+  categories?: { label: string; slug: string }[];
+}) {
   const router = useRouter();
   const [form, setForm] = useState<PostInput>(post ?? BLANK);
   const [saving, startSaving] = useTransition();
@@ -87,7 +93,18 @@ export function PostForm({ post }: { post?: PostDoc }) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1.5">
               <Label>Chuyên mục</Label>
-              <Input value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))} />
+              <select
+                value={form.category}
+                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+              >
+                <option value="">Chưa chọn</option>
+                {categories.map((category) => (
+                  <option key={category.slug} value={category.slug}>
+                    {category.label}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="space-y-1.5">
               <Label>Tác giả</Label>

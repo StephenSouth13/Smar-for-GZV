@@ -3,11 +3,14 @@ import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/public/Container";
 import { PostCard } from "@/components/public/PostCard";
 import { listPosts, listPostsByIds } from "@/lib/data/posts";
+import { getSiteSettings } from "@/lib/data/settings";
 import type { SectionDataMap } from "@/lib/schema/sections";
 
 export async function ArticleGrid({ data }: { data: SectionDataMap["articleGrid"] }) {
-  const posts =
-    data.mode === "manual" ? await listPostsByIds(data.postIds) : await listPosts({ publishedOnly: true, limit: data.limit });
+  const [posts, settings] = await Promise.all([
+    data.mode === "manual" ? listPostsByIds(data.postIds) : listPosts({ publishedOnly: true, limit: data.limit }),
+    getSiteSettings(),
+  ]);
 
   const visible = data.mode === "manual" ? posts.filter((p) => p.published) : posts;
   if (visible.length === 0) return null;
@@ -24,7 +27,7 @@ export async function ArticleGrid({ data }: { data: SectionDataMap["articleGrid"
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {visible.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post.id} post={post} categories={settings.postCategories} />
           ))}
         </div>
       </Container>

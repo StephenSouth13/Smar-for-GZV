@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Briefcase, Check, Eye, EyeOff, Globe2, Loader2, MapPin, Menu, Palette, PanelBottom, Save, Search, Share2 } from "lucide-react";
+import { Briefcase, Check, Eye, EyeOff, Globe2, Loader2, MapPin, Menu, Newspaper, Palette, PanelBottom, Save, Search, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -395,6 +395,40 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
         </CardContent>
       </Card>
 
+      <Card className="border-line/70 bg-white shadow-sm">
+        <CardHeader className="border-b border-line/60">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Newspaper className="h-5 w-5 text-brand-dark" />
+            Danh mục bài viết
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-5">
+          <ListEditor
+            items={form.postCategories}
+            onChange={(postCategories) => setForm((f) => ({ ...f, postCategories }))}
+            newItem={() => ({ label: "Danh mục mới", slug: "danh-muc-moi" })}
+            addLabel="Thêm danh mục"
+            emptyLabel="Chưa có danh mục nào."
+            renderItem={(item, update) => (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto]">
+                <Input
+                  placeholder="Tên danh mục"
+                  value={item.label}
+                  onChange={(e) => {
+                    const label = e.target.value;
+                    update({ label, slug: item.slug ? item.slug : slugify(label) });
+                  }}
+                />
+                <Input placeholder="slug" value={item.slug} onChange={(e) => update({ slug: slugify(e.target.value) })} />
+                <Button type="button" variant="outline" onClick={() => update({ slug: slugify(item.label) })}>
+                  Tạo slug
+                </Button>
+              </div>
+            )}
+          />
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="border-line/70 bg-white shadow-sm">
           <CardHeader className="border-b border-line/60">
@@ -580,12 +614,12 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
                 />
                 <p className="text-sm text-ink-muted">
                   Vào Google Maps → tìm địa chỉ → <span className="font-medium text-ink">Chia sẻ</span> →{" "}
-                  <span className="font-medium text-ink">Nhúng bản đồ</span> → copy phần <code className="font-mono">src="..."</code> và dán
+                  <span className="font-medium text-ink">Nhúng bản đồ</span> → copy phần <code className="font-mono">src=&quot;...&quot;</code> và dán
                   vào đây.
                 </p>
               </div>
               <div className="space-y-1.5">
-                <Label>Link "Chỉ đường" (tuỳ chọn)</Label>
+                <Label>Link &quot;Chỉ đường&quot; (tuỳ chọn)</Label>
                 <Input
                   value={form.contactMapLink}
                   onChange={(e) => setForm((f) => ({ ...f, contactMapLink: e.target.value }))}

@@ -1,14 +1,22 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { CheckCircle2, FileEdit, Newspaper, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PostRowActions } from "@/components/admin/PostRowActions";
+import { PostsTable } from "@/components/admin/PostsTable";
 import { listPosts } from "@/lib/data/posts";
+import { getSiteSettings } from "@/lib/data/settings";
 
 export default async function AdminPostsPage() {
-  const posts = await listPosts();
+  const [posts, settings] = await Promise.all([listPosts(), getSiteSettings()]);
+
+  const published = posts.filter((p) => p.published).length;
+  const draft = posts.length - published;
+
+  const stats = [
+    { label: "Tổng bài viết", value: posts.length, icon: Newspaper, tone: "bg-amber-50 text-amber-700" },
+    { label: "Đã xuất bản", value: published, icon: CheckCircle2, tone: "bg-emerald-50 text-emerald-700" },
+    { label: "Bản nháp", value: draft, icon: FileEdit, tone: "bg-sky-50 text-sky-700" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -25,40 +33,21 @@ export default async function AdminPostsPage() {
         </Link>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          {posts.length === 0 ? (
-            <div className="py-16 text-center text-ink-muted">Chưa có bài viết nào.</div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Tiêu đề</TableHead>
-                  <TableHead>Chuyên mục</TableHead>
-                  <TableHead>Trạng thái</TableHead>
-                  <TableHead className="text-right">Thao tác</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {posts.map((post) => (
-                  <TableRow key={post.id}>
-                    <TableCell className="font-medium text-ink">{post.title}</TableCell>
-                    <TableCell className="text-ink-muted">{post.category || "—"}</TableCell>
-                    <TableCell>
-                      <Badge variant={post.published ? "default" : "secondary"} className={post.published ? "bg-brand" : ""}>
-                        {post.published ? "Đã xuất bản" : "Nháp"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <PostRowActions id={post.id} title={post.title} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {stats.map((stat) => (
+          <Card key={stat.label} className="border-line/70 bg-white shadow-sm">
+            <CardContent className="pt-6">
+              <div className={`flex h-11 w-11 items-center justify-center rounded-lg ${stat.tone}`}>
+                <stat.icon className="h-5 w-5" />
+              </div>
+              <div className="mt-4 text-3xl font-extrabold tracking-tight text-ink">{stat.value}</div>
+              <div className="text-sm font-medium text-ink-muted">{stat.label}</div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <PostsTable posts={posts} categories={settings.postCategories} />
     </div>
   );
 }

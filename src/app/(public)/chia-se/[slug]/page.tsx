@@ -37,16 +37,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function PostDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await getPublishedPostBySlug(slug);
+  const [post, settings] = await Promise.all([getPublishedPostBySlug(slug), getSiteSettings()]);
   if (!post) notFound();
+
+  const categoryLabel = post.category
+    ? settings.postCategories.find((category) => category.slug === post.category)?.label || post.category
+    : "";
 
   return (
     <article className="py-16">
       <Container className="max-w-3xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 text-sm text-ink-muted">
-            {post.category && <span className="font-medium text-brand-dark">{post.category}</span>}
-            {post.category && <span>•</span>}
+            {categoryLabel && <span className="font-medium text-brand-dark">{categoryLabel}</span>}
+            {categoryLabel && <span>•</span>}
             <span>{formatDate(post.publishedAt)}</span>
             {post.author && <span>•</span>}
             {post.author && <span>{post.author}</span>}

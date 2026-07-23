@@ -5,9 +5,15 @@ import { Newspaper, Search, SlidersHorizontal } from "lucide-react";
 import { PostCard } from "@/components/public/PostCard";
 import { cn } from "@/lib/utils";
 import type { PostDoc } from "@/lib/data/posts";
+import type { SettingsInput } from "@/lib/schema/content";
 
-export function PostFilterGrid({ posts }: { posts: PostDoc[] }) {
-  const categories = useMemo(() => Array.from(new Set(posts.map((post) => post.category).filter(Boolean))), [posts]);
+export function PostFilterGrid({ posts, categories = [] }: { posts: PostDoc[]; categories?: SettingsInput["postCategories"] }) {
+  const usedCategorySlugs = useMemo(() => Array.from(new Set(posts.map((post) => post.category).filter(Boolean))), [posts]);
+  const usedCategories = useMemo(
+    () =>
+      usedCategorySlugs.map((slug) => categories.find((category) => category.slug === slug) || { slug, label: slug }),
+    [usedCategorySlugs, categories],
+  );
   const [activeCategory, setActiveCategory] = useState("");
   const [query, setQuery] = useState("");
 
@@ -37,7 +43,7 @@ export function PostFilterGrid({ posts }: { posts: PostDoc[] }) {
           </div>
         </div>
 
-        {categories.length > 0 && (
+        {usedCategories.length > 0 && (
           <div className="mt-5 flex flex-wrap gap-2">
             <button
               onClick={() => setActiveCategory("")}
@@ -49,19 +55,19 @@ export function PostFilterGrid({ posts }: { posts: PostDoc[] }) {
               <Newspaper className="h-4 w-4" />
               Tất cả
             </button>
-            {categories.map((category) => (
+            {usedCategories.map((category) => (
               <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
+                key={category.slug}
+                onClick={() => setActiveCategory(category.slug)}
                 className={cn(
                   "inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition-colors",
-                  activeCategory === category
+                  activeCategory === category.slug
                     ? "border-brand bg-brand text-white"
                     : "border-line/70 bg-white text-ink hover:border-brand/50",
                 )}
               >
                 <Newspaper className="h-4 w-4" />
-                {category}
+                {category.label}
               </button>
             ))}
           </div>
@@ -75,7 +81,7 @@ export function PostFilterGrid({ posts }: { posts: PostDoc[] }) {
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {visible.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post.id} post={post} categories={categories} />
           ))}
         </div>
       )}

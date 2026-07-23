@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { cld } from "@/lib/image-url";
 import type { PostDoc } from "@/lib/data/posts";
+import type { SettingsInput } from "@/lib/schema/content";
 
 function formatDate(iso: string) {
   if (!iso) return "";
@@ -14,7 +15,9 @@ function formatDate(iso: string) {
   }
 }
 
-export function PostCard({ post }: { post: PostDoc }) {
+export function PostCard({ post, categories = [] }: { post: PostDoc; categories?: SettingsInput["postCategories"] }) {
+  const categoryLabel = post.category ? categories.find((category) => category.slug === post.category)?.label || post.category : "";
+
   return (
     <Link
       href={`/chia-se/${post.slug}`}
@@ -35,8 +38,8 @@ export function PostCard({ post }: { post: PostDoc }) {
       </div>
       <div className="p-5">
         <div className="flex items-center gap-2 text-xs text-ink-muted">
-          {post.category && <span className="font-medium text-brand-dark">{post.category}</span>}
-          {post.category && post.publishedAt && <span>•</span>}
+          {categoryLabel && <span className="font-medium text-brand-dark">{categoryLabel}</span>}
+          {categoryLabel && post.publishedAt && <span>•</span>}
           {post.publishedAt && <span>{formatDate(post.publishedAt)}</span>}
         </div>
         <h3 className="mt-2 font-semibold text-ink group-hover:text-brand-dark transition-colors line-clamp-2">

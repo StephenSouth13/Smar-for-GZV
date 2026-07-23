@@ -128,6 +128,12 @@ export const settingsSchema = z.object({
       { label: "Dự án Nhân hiệu", slug: "du-an-nhan-hieu" },
       { label: "Dự án Phẩm hiệu", slug: "du-an-pham-hieu" },
     ]),
+  postCategories: z
+    .array(categorySchema)
+    .default([
+      { label: "Kiến thức Marketing", slug: "kien-thuc-marketing" },
+      { label: "Tin tức GZV", slug: "tin-tuc-gzv" },
+    ]),
   footerText: z.string().default(""),
   footerLogoUrl: z.string().default(""),
   footerHeadline: z.string().default(""),
