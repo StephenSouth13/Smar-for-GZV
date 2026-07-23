@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
@@ -7,7 +7,7 @@ import { SiteLoader } from "@/components/SiteLoader";
 import { getSiteSettings } from "@/lib/data/settings";
 import { buildMetadata } from "@/lib/seo";
 
-const beVietnamPro = Be_Vietnam_Pro({
+const montserrat = Montserrat({
   variable: "--font-sans",
   subsets: ["latin", "vietnamese"],
   weight: ["400", "500", "600", "700", "800"],
@@ -32,7 +32,7 @@ export default async function RootLayout({
   const settings = await getSiteSettings();
 
   return (
-    <html lang="vi" className={`${beVietnamPro.variable} h-full antialiased`}>
+    <html lang="vi" className={`${montserrat.variable} h-full antialiased`}>
       <body suppressHydrationWarning className="min-h-full flex flex-col bg-background text-foreground">
         {settings.loadingScreenEnabled && <SiteLoader settings={settings} />}
         <TooltipProvider>{children}</TooltipProvider>
