@@ -6,6 +6,10 @@ export const heroDataSchema = z.object({
   backgroundImageUrl: z.string().default(""),
   ctaText: z.string().default(""),
   ctaLink: z.string().default(""),
+  /** When true, render only the banner image full-bleed — no heading/subheading/CTA overlay. */
+  imageOnly: z.boolean().default(false),
+  headingColor: z.string().default(""),
+  subheadingColor: z.string().default(""),
 });
 
 export const aboutPreviewDataSchema = z.object({
@@ -122,6 +126,9 @@ export type Section = {
     order: number;
     title: string;
     hidden: boolean;
+    backgroundColor: string;
+    textColor: string;
+    accentColor: string;
     data: SectionDataMap[K];
   };
 }[SectionType];
@@ -159,5 +166,15 @@ export function defaultSectionData<T extends SectionType>(type: T): SectionDataM
 }
 
 export function createSection<T extends SectionType>(type: T, order: number, id: string): SectionOf<T> {
-  return { id, type, order, title: "", hidden: false, data: defaultSectionData(type) } as unknown as SectionOf<T>;
+  return {
+    id,
+    type,
+    order,
+    title: "",
+    hidden: false,
+    backgroundColor: "",
+    textColor: "",
+    accentColor: "",
+    data: defaultSectionData(type),
+  } as unknown as SectionOf<T>;
 }

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Briefcase, Eye, EyeOff, Globe2, Menu, Palette, Save, Search, Share2 } from "lucide-react";
+import { Briefcase, Check, Eye, EyeOff, Globe2, Menu, Palette, PanelBottom, Save, Search, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,22 +16,86 @@ import { saveSiteSettingsAction } from "@/lib/actions/settings";
 import { slugify } from "@/lib/utils/slug";
 
 const THEME_PRESETS = [
-  { name: "Xanh lá (mặc định)", value: "#39b54a" },
-  { name: "Đỏ", value: "#e11d2e" },
-  { name: "Cam", value: "#f97316" },
-  { name: "Xanh dương", value: "#2563eb" },
-  { name: "Tím", value: "#7c3aed" },
-  { name: "Hồng", value: "#db2777" },
+  {
+    name: "GZV Logo",
+    primary: "#005ba8",
+    accent: "#ed1c24",
+    surface: "#f3f7fb",
+    ink: "#13263a",
+    muted: "#64748b",
+    line: "#d8e3ee",
+  },
+  {
+    name: "GZV Deep",
+    primary: "#004b91",
+    accent: "#e31b23",
+    surface: "#eef5fb",
+    ink: "#0f2238",
+    muted: "#5b6f86",
+    line: "#cddceb",
+  },
+  {
+    name: "Executive",
+    primary: "#0f3d66",
+    accent: "#d71920",
+    surface: "#f6f8fb",
+    ink: "#162235",
+    muted: "#647083",
+    line: "#dce3ec",
+  },
 ];
 
+function applyThemePreset(setForm: React.Dispatch<React.SetStateAction<SettingsInput>>, preset: (typeof THEME_PRESETS)[number]) {
+  setForm((f) => ({
+    ...f,
+    themeColor: preset.primary,
+    themeAccentColor: preset.accent,
+    themeSurfaceColor: preset.surface,
+    themeInkColor: preset.ink,
+    themeMutedColor: preset.muted,
+    themeLineColor: preset.line,
+  }));
+}
+
+function ColorInput({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-9 w-11 shrink-0 cursor-pointer rounded-lg border border-line bg-transparent p-1"
+        />
+        <Input value={value} onChange={(e) => onChange(e.target.value)} className="font-mono" />
+      </div>
+    </div>
+  );
+}
+
 export function SettingsForm({ settings }: { settings: SettingsInput }) {
-  const [form, setForm] = useState<SettingsInput>(settings);
+  const [form, setForm] = useState<SettingsInput>({
+    ...settings,
+    footerDescription: settings.footerDescription || settings.footerText,
+  });
   const [saving, startSaving] = useTransition();
 
   function handleSave() {
     startSaving(async () => {
       try {
-        await saveSiteSettingsAction(form);
+        await saveSiteSettingsAction({
+          ...form,
+          footerText: form.footerDescription || form.footerText,
+        });
         toast.success("Đã lưu cài đặt.");
       } catch {
         toast.error("Lưu thất bại.");
@@ -41,7 +105,7 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.05fr_0.95fr]">
         <Card className="border-line/70 bg-white shadow-sm">
           <CardHeader className="border-b border-line/60">
             <CardTitle className="flex items-center gap-2 text-lg">
@@ -50,7 +114,7 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 pt-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label>Tên website</Label>
                 <Input value={form.siteName} onChange={(e) => setForm((f) => ({ ...f, siteName: e.target.value }))} />
@@ -60,11 +124,11 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
                 <Input value={form.tagline} onChange={(e) => setForm((f) => ({ ...f, tagline: e.target.value }))} />
               </div>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <ImageField aspect={1} label="Logo header" value={form.logoUrl} onChange={(logoUrl) => setForm((f) => ({ ...f, logoUrl }))} />
               <ImageField aspect={1} label="Favicon tab" value={form.faviconUrl} onChange={(faviconUrl) => setForm((f) => ({ ...f, faviconUrl }))} />
             </div>
-            <div className="flex items-center justify-between rounded-lg border border-line/70 bg-surface/70 p-4">
+            <div className="flex items-center justify-between gap-4 rounded-lg border border-line/70 bg-surface/70 p-4">
               <div>
                 <div className="font-medium text-ink">Hiện header trên website</div>
                 <div className="text-sm text-ink-muted">Tắt khi cần landing page hoặc trang riêng không có menu.</div>
@@ -83,7 +147,7 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
           </CardHeader>
           <CardContent className="space-y-4 pt-5">
             <div className="space-y-1.5">
-                <Label>Title tab mặc định</Label>
+              <Label>Title tab mặc định</Label>
               <Input value={form.seoTitle} onChange={(e) => setForm((f) => ({ ...f, seoTitle: e.target.value }))} />
             </div>
             <div className="space-y-1.5">
@@ -112,47 +176,101 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
         <CardHeader className="border-b border-line/60">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Palette className="h-5 w-5 text-brand-dark" />
-            Màu sắc thương hiệu
+            Theme màu theo logo GZV
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 pt-5">
-          <div className="flex flex-wrap gap-3">
-            {THEME_PRESETS.map((preset) => (
-              <button
-                key={preset.value}
-                type="button"
-                onClick={() => setForm((f) => ({ ...f, themeColor: preset.value }))}
-                title={preset.name}
-                className={`flex h-11 w-11 items-center justify-center rounded-full ring-offset-2 transition-all ${
-                  form.themeColor.toLowerCase() === preset.value.toLowerCase()
-                    ? "ring-2 ring-ink scale-110"
-                    : "ring-1 ring-line hover:scale-105"
-                }`}
-                style={{ backgroundColor: preset.value }}
-              >
-                {form.themeColor.toLowerCase() === preset.value.toLowerCase() && (
-                  <span className="h-2.5 w-2.5 rounded-full bg-white" />
-                )}
-              </button>
-            ))}
+        <CardContent className="space-y-5 pt-5">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            {THEME_PRESETS.map((preset) => {
+              const active =
+                form.themeColor.toLowerCase() === preset.primary.toLowerCase() &&
+                form.themeAccentColor.toLowerCase() === preset.accent.toLowerCase();
+              return (
+                <button
+                  key={preset.name}
+                  type="button"
+                  onClick={() => applyThemePreset(setForm, preset)}
+                  className={`rounded-lg border p-3 text-left transition-all ${
+                    active ? "border-brand bg-brand/5 shadow-sm" : "border-line/70 bg-white hover:border-brand/50"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-ink">{preset.name}</span>
+                    {active && <Check className="h-4 w-4 text-brand-dark" />}
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    {[preset.primary, preset.accent, preset.surface, preset.ink].map((color) => (
+                      <span key={color} className="h-7 w-7 rounded-full border border-line" style={{ backgroundColor: color }} />
+                    ))}
+                  </div>
+                </button>
+              );
+            })}
           </div>
-          <div className="flex items-center gap-3">
-            <input
-              type="color"
-              value={form.themeColor}
-              onChange={(e) => setForm((f) => ({ ...f, themeColor: e.target.value }))}
-              className="h-10 w-14 cursor-pointer rounded-lg border border-line bg-transparent p-1"
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <ColorInput label="Màu chính" value={form.themeColor} onChange={(themeColor) => setForm((f) => ({ ...f, themeColor }))} />
+            <ColorInput
+              label="Màu nhấn / đỏ logo"
+              value={form.themeAccentColor}
+              onChange={(themeAccentColor) => setForm((f) => ({ ...f, themeAccentColor }))}
             />
-            <Input
-              value={form.themeColor}
-              onChange={(e) => setForm((f) => ({ ...f, themeColor: e.target.value }))}
-              className="max-w-40 font-mono"
+            <ColorInput
+              label="Màu nền nhẹ"
+              value={form.themeSurfaceColor}
+              onChange={(themeSurfaceColor) => setForm((f) => ({ ...f, themeSurfaceColor }))}
             />
-            <span className="text-sm text-ink-muted">Chọn màu tuỳ ý hoặc nhập mã hex</span>
+            <ColorInput label="Màu chữ chính" value={form.themeInkColor} onChange={(themeInkColor) => setForm((f) => ({ ...f, themeInkColor }))} />
+            <ColorInput
+              label="Màu chữ phụ"
+              value={form.themeMutedColor}
+              onChange={(themeMutedColor) => setForm((f) => ({ ...f, themeMutedColor }))}
+            />
+            <ColorInput
+              label="Màu đường viền"
+              value={form.themeLineColor}
+              onChange={(themeLineColor) => setForm((f) => ({ ...f, themeLineColor }))}
+            />
           </div>
-          <p className="text-xs text-ink-muted">
-            Màu này áp dụng cho nút bấm, liên kết nổi bật, icon... trên toàn bộ website và trang quản trị.
-          </p>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
+            <div className="space-y-1.5">
+              <Label>Bo góc giao diện: {form.themeRadius}px</Label>
+              <input
+                type="range"
+                min={4}
+                max={24}
+                value={form.themeRadius}
+                onChange={(e) => setForm((f) => ({ ...f, themeRadius: Number(e.target.value) }))}
+                className="w-full accent-brand"
+              />
+            </div>
+            <div
+              className="overflow-hidden rounded-lg border p-4"
+              style={{
+                backgroundColor: form.themeSurfaceColor,
+                borderColor: form.themeLineColor,
+                color: form.themeInkColor,
+                borderRadius: form.themeRadius,
+              }}
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <div className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: form.themeColor }}>
+                    Preview
+                  </div>
+                  <div className="mt-1 text-lg font-extrabold">Giao diện theo nhận diện GZV</div>
+                  <p className="mt-1 text-sm" style={{ color: form.themeMutedColor }}>
+                    Xanh chủ đạo, đỏ làm điểm nhấn, nền sáng và viền sạch.
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <span className="h-10 w-10 rounded-lg" style={{ backgroundColor: form.themeColor }} />
+                  <span className="h-10 w-10 rounded-lg" style={{ backgroundColor: form.themeAccentColor }} />
+                </div>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -169,8 +287,9 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
             onChange={(headerMenu) => setForm((f) => ({ ...f, headerMenu }))}
             newItem={() => ({ label: "Trang mới", href: "/" })}
             addLabel="Thêm mục menu"
+            emptyLabel="Chưa có mục menu nào."
             renderItem={(item, update) => (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <Input placeholder="Nhãn hiển thị" value={item.label} onChange={(e) => update({ label: e.target.value })} />
                 <Input placeholder="Đường dẫn" value={item.href} onChange={(e) => update({ href: e.target.value })} />
               </div>
@@ -192,8 +311,9 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
             onChange={(projectCategories) => setForm((f) => ({ ...f, projectCategories }))}
             newItem={() => ({ label: "Danh mục mới", slug: "danh-muc-moi" })}
             addLabel="Thêm danh mục"
+            emptyLabel="Chưa có danh mục nào."
             renderItem={(item, update) => (
-              <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto]">
                 <Input
                   placeholder="Tên danh mục"
                   value={item.label}
@@ -221,7 +341,7 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 pt-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label>Email</Label>
                 <Input value={form.contactEmail} onChange={(e) => setForm((f) => ({ ...f, contactEmail: e.target.value }))} />
@@ -235,7 +355,7 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
               <Label>Địa chỉ</Label>
               <Input value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label>Facebook URL</Label>
                 <Input value={form.socialFacebook} onChange={(e) => setForm((f) => ({ ...f, socialFacebook: e.target.value }))} />
@@ -255,24 +375,115 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
         <Card className="border-line/70 bg-white shadow-sm">
           <CardHeader className="border-b border-line/60">
             <CardTitle className="flex items-center gap-2 text-lg">
-              {form.showHeader ? <Eye className="h-5 w-5 text-brand-dark" /> : <EyeOff className="h-5 w-5 text-brand-dark" />}
-              Chân trang
+              <PanelBottom className="h-5 w-5 text-brand-dark" />
+              Chân trang chi tiết
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-5">
-            <Textarea
-              rows={8}
-              value={form.footerText}
-              onChange={(e) => setForm((f) => ({ ...f, footerText: e.target.value }))}
-              placeholder="Mô tả ngắn hiển thị ở chân trang"
+          <CardContent className="space-y-4 pt-5">
+            <ImageField
+              aspect={2}
+              label="Logo footer"
+              value={form.footerLogoUrl}
+              onChange={(footerLogoUrl) => setForm((f) => ({ ...f, footerLogoUrl }))}
             />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label>Tiêu đề footer</Label>
+                <Input
+                  value={form.footerHeadline}
+                  onChange={(e) => setForm((f) => ({ ...f, footerHeadline: e.target.value }))}
+                  placeholder="Đối tác marketing tin cậy"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Copyright</Label>
+                <Input
+                  value={form.footerCopyright}
+                  onChange={(e) => setForm((f) => ({ ...f, footerCopyright: e.target.value }))}
+                  placeholder="© 2026 GZV Ltd. All rights reserved."
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Mô tả footer</Label>
+              <Textarea
+                rows={4}
+                value={form.footerDescription}
+                onChange={(e) => setForm((f) => ({ ...f, footerDescription: e.target.value }))}
+                placeholder="Mô tả ngắn hiển thị ở chân trang"
+              />
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label>Nút CTA</Label>
+                <Input
+                  value={form.footerCtaText}
+                  onChange={(e) => setForm((f) => ({ ...f, footerCtaText: e.target.value }))}
+                  placeholder="Nhận tư vấn"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Link CTA</Label>
+                <Input value={form.footerCtaHref} onChange={(e) => setForm((f) => ({ ...f, footerCtaHref: e.target.value }))} />
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-4 rounded-lg border border-line/70 bg-surface/70 p-4">
+              <div>
+                <div className="font-medium text-ink">Hiện link quản trị ở footer</div>
+                <div className="text-sm text-ink-muted">Có thể tắt nếu muốn chân trang gọn hơn.</div>
+              </div>
+              <Switch checked={form.showAdminLink} onCheckedChange={(showAdminLink) => setForm((f) => ({ ...f, showAdminLink }))} />
+            </div>
           </CardContent>
         </Card>
       </div>
 
+      <Card className="border-line/70 bg-white shadow-sm">
+        <CardHeader className="border-b border-line/60">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            {form.showAdminLink ? <Eye className="h-5 w-5 text-brand-dark" /> : <EyeOff className="h-5 w-5 text-brand-dark" />}
+            Menu trong footer
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 gap-6 pt-5 lg:grid-cols-2">
+          <div className="space-y-3">
+            <Label>Liên kết nhanh</Label>
+            <ListEditor
+              items={form.footerQuickLinks}
+              onChange={(footerQuickLinks) => setForm((f) => ({ ...f, footerQuickLinks }))}
+              newItem={() => ({ label: "Liên kết mới", href: "/" })}
+              addLabel="Thêm liên kết"
+              emptyLabel="Chưa có liên kết nhanh."
+              renderItem={(item, update) => (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Input placeholder="Nhãn" value={item.label} onChange={(e) => update({ label: e.target.value })} />
+                  <Input placeholder="Đường dẫn" value={item.href} onChange={(e) => update({ href: e.target.value })} />
+                </div>
+              )}
+            />
+          </div>
+          <div className="space-y-3">
+            <Label>Dịch vụ / chuyên mục</Label>
+            <ListEditor
+              items={form.footerServiceLinks}
+              onChange={(footerServiceLinks) => setForm((f) => ({ ...f, footerServiceLinks }))}
+              newItem={() => ({ label: "Dịch vụ mới", href: "/du-an" })}
+              addLabel="Thêm dịch vụ"
+              emptyLabel="Chưa có dịch vụ nào."
+              renderItem={(item, update) => (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Input placeholder="Nhãn" value={item.label} onChange={(e) => update({ label: e.target.value })} />
+                  <Input placeholder="Đường dẫn" value={item.href} onChange={(e) => update({ href: e.target.value })} />
+                </div>
+              )}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="sticky bottom-4 z-10 flex justify-end">
         <Button onClick={handleSave} disabled={saving} className="bg-brand px-6 shadow-lg shadow-brand/25 hover:bg-brand-dark">
-          <Save className="h-4 w-4 mr-1" />
+          <Save className="mr-1 h-4 w-4" />
           {saving ? "Đang lưu..." : "Lưu cài đặt"}
         </Button>
       </div>

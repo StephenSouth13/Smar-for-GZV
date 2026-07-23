@@ -14,34 +14,59 @@ import { Testimonials } from "./Testimonials";
 export function SectionRenderer({ section }: { section: Section }) {
   if (section.hidden) return null;
 
+  const style = {
+    ...(section.backgroundColor ? { "--surface": section.backgroundColor, backgroundColor: section.backgroundColor } : {}),
+    ...(section.textColor ? { "--ink": section.textColor, color: section.textColor } : {}),
+    ...(section.accentColor ? { "--brand": section.accentColor, "--brand-dark": section.accentColor } : {}),
+  } as React.CSSProperties;
+
+  let content: React.ReactNode = null;
+
   switch (section.type) {
     case "hero":
-      return <Hero data={section.data} />;
+      content = <Hero data={section.data} />;
+      break;
     case "aboutPreview":
-      return <AboutPreview data={section.data} />;
+      content = <AboutPreview data={section.data} />;
+      break;
     case "logoGrid":
-      return <LogoGrid data={section.data} />;
+      content = <LogoGrid data={section.data} />;
+      break;
     case "projectGrid":
     case "projectBrandGrid":
     case "projectProductGrid":
-      return <ProjectGrid data={section.data} />;
+      content = <ProjectGrid data={section.data} />;
+      break;
     case "articleGrid":
-      return <ArticleGrid data={section.data} />;
+      content = <ArticleGrid data={section.data} />;
+      break;
     case "cta":
-      return <Cta data={section.data} />;
+      content = <Cta data={section.data} />;
+      break;
     case "contactForm":
-      return <ContactForm data={section.data} />;
+      content = <ContactForm data={section.data} />;
+      break;
     case "richText":
-      return <RichText data={section.data} />;
+      content = <RichText data={section.data} />;
+      break;
     case "imageGallery":
-      return <ImageGallery data={section.data} />;
+      content = <ImageGallery data={section.data} />;
+      break;
     case "stats":
-      return <Stats data={section.data} />;
+      content = <Stats data={section.data} />;
+      break;
     case "testimonials":
-      return <Testimonials data={section.data} />;
+      content = <Testimonials data={section.data} />;
+      break;
     default:
       return null;
   }
+
+  return (
+    <div className="cms-section-shell" style={style}>
+      {content}
+    </div>
+  );
 }
 
 export function SectionList({ sections }: { sections: Section[] }) {

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/public/Container";
@@ -5,6 +6,26 @@ import { cld } from "@/lib/image-url";
 import type { SectionDataMap } from "@/lib/schema/sections";
 
 export function Hero({ data }: { data: SectionDataMap["hero"] }) {
+  if (data.imageOnly && data.backgroundImageUrl) {
+    return (
+      <section className="bg-white">
+        <Container className="px-0 sm:px-0 lg:px-0">
+          <Link href={data.ctaLink || "#"} className={data.ctaLink ? "block" : "pointer-events-none block"}>
+            <Image
+              src={cld(data.backgroundImageUrl, { width: 1920 })}
+              alt={data.heading || "Banner"}
+              width={1920}
+              height={800}
+              className="h-auto w-full"
+              unoptimized
+              priority
+            />
+          </Link>
+        </Container>
+      </section>
+    );
+  }
+
   return (
     <section
       className="relative overflow-hidden bg-ink text-white"
@@ -20,11 +41,19 @@ export function Hero({ data }: { data: SectionDataMap["hero"] }) {
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(57,181,74,.25),transparent_45%)]" />
       <Container className="relative py-24 sm:py-32 text-center">
-        <h1 className="mx-auto max-w-3xl text-3xl sm:text-5xl font-bold leading-tight tracking-tight">
+        <h1
+          className="mx-auto max-w-3xl text-3xl sm:text-5xl font-bold leading-tight tracking-tight"
+          style={data.headingColor ? { color: data.headingColor } : undefined}
+        >
           {data.heading}
         </h1>
         {data.subheading && (
-          <p className="mx-auto mt-5 max-w-2xl text-base sm:text-lg text-white/80">{data.subheading}</p>
+          <p
+            className="mx-auto mt-5 max-w-2xl text-base sm:text-lg text-white/80"
+            style={data.subheadingColor ? { color: data.subheadingColor } : undefined}
+          >
+            {data.subheading}
+          </p>
         )}
         {data.ctaText && (
           <div className="mt-9">

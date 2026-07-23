@@ -6,6 +6,9 @@ export const sectionSchema = z.object({
   order: z.number(),
   title: z.string().default(""),
   hidden: z.boolean().default(false),
+  backgroundColor: z.string().default(""),
+  textColor: z.string().default(""),
+  accentColor: z.string().default(""),
   data: z.record(z.string(), z.unknown()),
 });
 
@@ -80,7 +83,13 @@ export const categorySchema = z.object({
 export const settingsSchema = z.object({
   siteName: z.string().default("GZV"),
   tagline: z.string().default("Solution For Marketing"),
-  themeColor: z.string().default("#39b54a"),
+  themeColor: z.string().default("#005ba8"),
+  themeAccentColor: z.string().default("#ed1c24"),
+  themeSurfaceColor: z.string().default("#f3f7fb"),
+  themeInkColor: z.string().default("#13263a"),
+  themeMutedColor: z.string().default("#64748b"),
+  themeLineColor: z.string().default("#d8e3ee"),
+  themeRadius: z.number().min(4).max(24).default(10),
   logoUrl: z.string().default(""),
   faviconUrl: z.string().default(""),
   ogImageUrl: z.string().default(""),
@@ -102,5 +111,14 @@ export const settingsSchema = z.object({
       { label: "Dự án Phẩm hiệu", slug: "du-an-pham-hieu" },
     ]),
   footerText: z.string().default(""),
+  footerLogoUrl: z.string().default(""),
+  footerHeadline: z.string().default(""),
+  footerDescription: z.string().default(""),
+  footerCtaText: z.string().default(""),
+  footerCtaHref: z.string().default("/lien-he"),
+  footerCopyright: z.string().default(""),
+  footerQuickLinks: z.array(menuItemSchema).default([]),
+  footerServiceLinks: z.array(menuItemSchema).default([]),
+  showAdminLink: z.boolean().default(true),
 });
 export type SettingsInput = z.infer<typeof settingsSchema>;

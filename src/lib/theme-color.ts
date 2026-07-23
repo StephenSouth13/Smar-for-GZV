@@ -16,3 +16,7 @@ export function darken(hex: string, amount = 0.18): string {
   const [r, g, b] = hexToRgb(hex);
   return rgbToHex(r * (1 - amount), g * (1 - amount), b * (1 - amount));
 }
+
+export function isHexColor(value: string): boolean {
+  return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value);
+}

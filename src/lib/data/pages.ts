@@ -33,6 +33,9 @@ function toPageDoc(slug: string, data: FirebaseFirestore.DocumentData): PageDoc 
       ...section,
       title: section.title ?? "",
       hidden: section.hidden ?? false,
+      backgroundColor: section.backgroundColor ?? "",
+      textColor: section.textColor ?? "",
+      accentColor: section.accentColor ?? "",
     }),
   );
 

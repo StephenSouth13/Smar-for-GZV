@@ -31,10 +31,11 @@ function toProjectDoc(id: string, data: FirebaseFirestore.DocumentData): Project
 export async function listProjects(opts?: { publishedOnly?: boolean; limit?: number; category?: string }): Promise<ProjectDoc[]> {
   let query: FirebaseFirestore.Query = adminDb.collection("projects").orderBy("order", "asc");
   if (opts?.publishedOnly) query = query.where("published", "==", true);
-  if (opts?.category) query = query.where("category", "==", opts.category);
-  if (opts?.limit) query = query.limit(opts.limit);
+  if (opts?.limit && !opts?.category) query = query.limit(opts.limit);
   const snap = await query.get();
-  return snap.docs.map((d) => toProjectDoc(d.id, d.data()));
+  const projects = snap.docs.map((d) => toProjectDoc(d.id, d.data()));
+  const filtered = opts?.category ? projects.filter((project) => project.category === opts.category) : projects;
+  return opts?.limit ? filtered.slice(0, opts.limit) : filtered;
 }
 
 export async function listProjectsByIds(ids: string[]): Promise<ProjectDoc[]> {

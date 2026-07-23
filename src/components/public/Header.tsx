@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, PhoneCall } from "lucide-react";
+import { Menu, PhoneCall, X } from "lucide-react";
 import { Container } from "./Container";
 import { cld } from "@/lib/image-url";
 import type { SettingsInput } from "@/lib/schema/content";
@@ -14,31 +14,29 @@ export function Header({ settings }: { settings: SettingsInput }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line/70 bg-white/95 backdrop-blur">
-      <Container className="flex h-16 sm:h-20 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 shrink-0">
+      <Container className="flex h-16 items-center justify-between sm:h-20">
+        <Link href="/" className="flex shrink-0 items-center gap-2">
           {settings.logoUrl ? (
             <Image
-              src={cld(settings.logoUrl, { width: 80, height: 80, crop: "fit" })}
+              src={cld(settings.logoUrl, { width: 96, height: 96, crop: "fit" })}
               alt={settings.siteName}
-              width={40}
-              height={40}
-              className="h-9 w-9 object-contain"
+              width={48}
+              height={48}
+              className="h-10 w-10 object-contain"
               unoptimized
             />
           ) : (
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-white font-bold">
-              {settings.siteName?.[0] ?? "G"}
-            </div>
+            <Image src="/gzv-logo.png" alt={settings.siteName} width={110} height={55} className="h-11 w-auto object-contain" unoptimized />
           )}
-          <div className="leading-tight">
+          <div className="hidden leading-tight sm:block">
             <div className="font-bold text-ink">{settings.siteName}</div>
-            <div className="text-[11px] text-ink-muted hidden sm:block">{settings.tagline}</div>
+            <div className="hidden text-[11px] text-ink-muted sm:block">{settings.tagline}</div>
           </div>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden items-center gap-8 lg:flex">
           {menu.map((item) => (
-            <Link key={item.href} href={item.href} className="text-sm font-medium text-ink hover:text-brand-dark transition-colors">
+            <Link key={item.href} href={item.href} className="text-sm font-medium text-ink transition-colors hover:text-brand-dark">
               {item.label}
             </Link>
           ))}
@@ -47,20 +45,20 @@ export function Header({ settings }: { settings: SettingsInput }) {
         <div className="hidden lg:block">
           <Link
             href="/lien-he"
-            className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark transition-colors"
+            className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
           >
             <PhoneCall className="h-4 w-4" />
             Yêu cầu tư vấn
           </Link>
         </div>
 
-        <button className="lg:hidden text-ink" onClick={() => setOpen((v) => !v)} aria-label="Menu">
+        <button className="text-ink lg:hidden" onClick={() => setOpen((v) => !v)} aria-label="Menu">
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </Container>
 
       {open && (
-        <div className="lg:hidden border-t border-line/70 bg-white">
+        <div className="border-t border-line/70 bg-white lg:hidden">
           <Container className="flex flex-col gap-1 py-3">
             {menu.map((item) => (
               <Link

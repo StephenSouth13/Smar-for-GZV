@@ -30,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className={`${beVietnamPro.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-background text-foreground">
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster richColors position="top-right" />
       </body>

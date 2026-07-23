@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import Cropper, { type Area, type Point } from "react-easy-crop";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { ZoomIn } from "lucide-react";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ZoomIn } from "lucide-react";
 import { getCroppedImageBlob } from "@/lib/crop-image";
 
 export function ImageCropDialog({
@@ -43,7 +43,7 @@ export function ImageCropDialog({
     <Dialog open onOpenChange={(open) => !open && onCancel()}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Cắt & chỉnh vị trí ảnh</DialogTitle>
+          <DialogTitle>Cắt và chỉnh vị trí ảnh</DialogTitle>
         </DialogHeader>
 
         <div className="relative h-80 w-full overflow-hidden rounded-lg bg-ink">
@@ -72,12 +72,12 @@ export function ImageCropDialog({
             onChange={(e) => setZoom(Number(e.target.value))}
             className="w-full accent-brand"
           />
-          <p className="text-xs text-ink-muted">Kéo ảnh để chọn vị trí hiển thị, dùng thanh trượt để phóng to/thu nhỏ.</p>
+          <p className="text-xs text-ink-muted">Kéo ảnh để chọn vị trí hiển thị, dùng thanh trượt để phóng to hoặc thu nhỏ.</p>
         </div>
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onCancel} disabled={working}>
-            Huỷ
+            Hủy
           </Button>
           <Button type="button" onClick={handleConfirm} disabled={working} className="bg-brand hover:bg-brand-dark">
             {working ? "Đang xử lý..." : "Dùng ảnh này"}

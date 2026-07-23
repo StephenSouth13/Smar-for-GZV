@@ -17,7 +17,14 @@ type CloudinaryResource = {
   created_at: string;
 };
 
+function assertCloudinaryConfigured() {
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    throw new Error("Cloudinary chưa được cấu hình đủ CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.");
+  }
+}
+
 export async function listMedia(): Promise<MediaItem[]> {
+  assertCloudinaryConfigured();
   const result = await cloudinary.api.resources({
     type: "upload",
     resource_type: "image",
@@ -37,6 +44,7 @@ export async function listMedia(): Promise<MediaItem[]> {
 }
 
 export async function uploadMedia(buffer: Buffer, filename: string, contentType: string): Promise<MediaItem> {
+  assertCloudinaryConfigured();
   const dataUri = `data:${contentType};base64,${buffer.toString("base64")}`;
   const result = await cloudinary.uploader.upload(dataUri, {
     folder: CLOUDINARY_FOLDER,
@@ -54,5 +62,6 @@ export async function uploadMedia(buffer: Buffer, filename: string, contentType:
 }
 
 export async function deleteMedia(path: string) {
+  assertCloudinaryConfigured();
   await cloudinary.uploader.destroy(path, { resource_type: "image" });
 }

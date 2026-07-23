@@ -12,7 +12,7 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
   ]);
   return (
     <>
-      <ThemeVars color={settings.themeColor} />
+      <ThemeVars settings={settings} />
       <AdminShell profile={profile} unreadLeads={unreadLeads}>
         {children}
       </AdminShell>

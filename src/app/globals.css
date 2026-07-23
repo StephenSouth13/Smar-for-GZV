@@ -156,3 +156,8 @@
 .animate-marquee {
   animation: marquee 28s linear infinite;
 }
+
+.cms-section-shell > section {
+  background: transparent;
+  color: inherit;
+}
