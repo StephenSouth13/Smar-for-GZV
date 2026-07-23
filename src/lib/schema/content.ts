@@ -114,6 +114,12 @@ export const settingsSchema = z.object({
   contactEmail: z.string().default(""),
   contactPhone: z.string().default(""),
   address: z.string().default(""),
+  contactPageHeading: z.string().default("Liên hệ với GZV"),
+  contactPageSubheading: z.string().default(""),
+  contactFormHeading: z.string().default("Yêu cầu tư vấn"),
+  contactFormSubheading: z.string().default("Để lại thông tin, đội ngũ GZV sẽ liên hệ tư vấn trong thời gian sớm nhất."),
+  contactMapEmbedUrl: z.string().default(""),
+  contactMapLink: z.string().default(""),
   socialLinks: z.array(socialLinkSchema).default([]),
   headerMenu: z.array(menuItemSchema).default([]),
   projectCategories: z

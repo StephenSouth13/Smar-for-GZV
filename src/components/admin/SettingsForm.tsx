@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Briefcase, Check, Eye, EyeOff, Globe2, Loader2, Menu, Palette, PanelBottom, Save, Search, Share2 } from "lucide-react";
+import { Briefcase, Check, Eye, EyeOff, Globe2, Loader2, MapPin, Menu, Palette, PanelBottom, Save, Search, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -418,6 +418,42 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
               <Label>Địa chỉ</Label>
               <Input value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} />
             </div>
+            <div className="grid grid-cols-1 gap-4 border-t border-line/60 pt-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label>Tiêu đề trang Liên hệ</Label>
+                <Input
+                  value={form.contactPageHeading}
+                  onChange={(e) => setForm((f) => ({ ...f, contactPageHeading: e.target.value }))}
+                  placeholder="Liên hệ với GZV"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Tiêu đề khối yêu cầu tư vấn</Label>
+                <Input
+                  value={form.contactFormHeading}
+                  onChange={(e) => setForm((f) => ({ ...f, contactFormHeading: e.target.value }))}
+                  placeholder="Yêu cầu tư vấn"
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Mô tả ngắn đầu trang Liên hệ</Label>
+              <Textarea
+                rows={2}
+                value={form.contactPageSubheading}
+                onChange={(e) => setForm((f) => ({ ...f, contactPageSubheading: e.target.value }))}
+                placeholder="Câu giới thiệu ngắn hiển thị đầu trang /lien-he"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Mô tả khối yêu cầu tư vấn</Label>
+              <Textarea
+                rows={2}
+                value={form.contactFormSubheading}
+                onChange={(e) => setForm((f) => ({ ...f, contactFormSubheading: e.target.value }))}
+                placeholder="Để lại thông tin, đội ngũ GZV sẽ liên hệ tư vấn trong thời gian sớm nhất."
+              />
+            </div>
             <div className="space-y-3 pt-2">
               <Label>Mạng xã hội</Label>
               <ListEditor<SettingsInput["socialLinks"][number]>
@@ -522,6 +558,60 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="border-line/70 bg-white shadow-sm">
+        <CardHeader className="border-b border-line/60">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <MapPin className="h-5 w-5 text-brand-dark" />
+            Bản đồ Google Maps
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 pt-5">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <Label>Link nhúng bản đồ (Embed URL)</Label>
+                <Textarea
+                  rows={3}
+                  value={form.contactMapEmbedUrl}
+                  onChange={(e) => setForm((f) => ({ ...f, contactMapEmbedUrl: e.target.value }))}
+                  placeholder="https://www.google.com/maps/embed?pb=..."
+                  className="font-mono text-xs"
+                />
+                <p className="text-sm text-ink-muted">
+                  Vào Google Maps → tìm địa chỉ → <span className="font-medium text-ink">Chia sẻ</span> →{" "}
+                  <span className="font-medium text-ink">Nhúng bản đồ</span> → copy phần <code className="font-mono">src="..."</code> và dán
+                  vào đây.
+                </p>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Link "Chỉ đường" (tuỳ chọn)</Label>
+                <Input
+                  value={form.contactMapLink}
+                  onChange={(e) => setForm((f) => ({ ...f, contactMapLink: e.target.value }))}
+                  placeholder="https://maps.google.com/?q=..."
+                />
+                <p className="text-sm text-ink-muted">Link Google Maps thường (không phải embed) để hiện nút mở chỉ đường.</p>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-lg border border-line/70 bg-surface/70">
+              {form.contactMapEmbedUrl ? (
+                <iframe
+                  key={form.contactMapEmbedUrl}
+                  src={form.contactMapEmbedUrl}
+                  className="h-full min-h-55 w-full"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              ) : (
+                <div className="flex h-full min-h-55 items-center justify-center px-4 text-center text-sm text-ink-muted">
+                  Dán link nhúng để xem trước bản đồ tại đây.
+                </div>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card className="border-line/70 bg-white shadow-sm">
         <CardHeader className="border-b border-line/60">
