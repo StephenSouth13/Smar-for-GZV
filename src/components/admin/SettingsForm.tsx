@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ImageField } from "@/components/admin/ImageField";
 import { ListEditor } from "@/components/admin/section-editors/fields";
 import type { SettingsInput } from "@/lib/schema/content";
+import { SOCIAL_PLATFORMS } from "@/lib/schema/content";
+import { SOCIAL_META } from "@/lib/social-icons";
 import { saveSiteSettingsAction } from "@/lib/actions/settings";
 import { slugify } from "@/lib/utils/slug";
 
@@ -416,19 +418,41 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
               <Label>Địa chỉ</Label>
               <Input value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} />
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label>Facebook URL</Label>
-                <Input value={form.socialFacebook} onChange={(e) => setForm((f) => ({ ...f, socialFacebook: e.target.value }))} />
-              </div>
-              <div className="space-y-1.5">
-                <Label>YouTube URL</Label>
-                <Input value={form.socialYoutube} onChange={(e) => setForm((f) => ({ ...f, socialYoutube: e.target.value }))} />
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Link Zalo</Label>
-              <Input value={form.socialZalo} onChange={(e) => setForm((f) => ({ ...f, socialZalo: e.target.value }))} />
+            <div className="space-y-3 pt-2">
+              <Label>Mạng xã hội</Label>
+              <ListEditor<SettingsInput["socialLinks"][number]>
+                items={form.socialLinks}
+                onChange={(socialLinks) => setForm((f) => ({ ...f, socialLinks }))}
+                newItem={() => ({ platform: "facebook", url: "" })}
+                addLabel="Thêm mạng xã hội"
+                emptyLabel="Chưa có mạng xã hội nào — thêm bao nhiêu tuỳ ý (Facebook, Zalo, YouTube, TikTok, Instagram, LinkedIn...)."
+                renderItem={(item, update) => {
+                  const Icon = SOCIAL_META[item.platform].icon;
+                  return (
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface text-ink-muted">
+                        <Icon />
+                      </span>
+                      <select
+                        value={item.platform}
+                        onChange={(e) => update({ platform: e.target.value as SettingsInput["socialLinks"][number]["platform"] })}
+                        className="h-9 shrink-0 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                      >
+                        {SOCIAL_PLATFORMS.map((p) => (
+                          <option key={p} value={p}>
+                            {SOCIAL_META[p].label}
+                          </option>
+                        ))}
+                      </select>
+                      <Input
+                        placeholder={SOCIAL_META[item.platform].placeholder}
+                        value={item.url}
+                        onChange={(e) => update({ url: e.target.value })}
+                      />
+                    </div>
+                  );
+                }}
+              />
             </div>
           </CardContent>
         </Card>

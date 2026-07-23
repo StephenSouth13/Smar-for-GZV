@@ -2,7 +2,8 @@ import { Phone, MessageCircle } from "lucide-react";
 import type { SettingsInput } from "@/lib/schema/content";
 
 export function FloatingContact({ settings }: { settings: SettingsInput }) {
-  if (!settings.contactPhone && !settings.socialZalo) return null;
+  const zalo = settings.socialLinks.find((s) => s.platform === "zalo" && s.url)?.url;
+  if (!settings.contactPhone && !zalo) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
@@ -16,9 +17,9 @@ export function FloatingContact({ settings }: { settings: SettingsInput }) {
           <Phone className="h-5 w-5" />
         </a>
       )}
-      {settings.socialZalo && (
+      {zalo && (
         <a
-          href={settings.socialZalo}
+          href={zalo}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center rounded-full bg-[#0068ff] text-white shadow-lg hover:scale-105 transition-transform"

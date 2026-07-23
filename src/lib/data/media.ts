@@ -1,5 +1,8 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { cloudinary, CLOUDINARY_FOLDER } from "@/lib/cloudinary";
+
+export const MEDIA_LIST_TAG = "media-list";
 
 export type MediaItem = {
   path: string; // Cloudinary public_id
@@ -23,25 +26,34 @@ function assertCloudinaryConfigured() {
   }
 }
 
-export async function listMedia(): Promise<MediaItem[]> {
-  assertCloudinaryConfigured();
-  const result = await cloudinary.api.resources({
-    type: "upload",
-    resource_type: "image",
-    prefix: `${CLOUDINARY_FOLDER}/`,
-    max_results: 200,
-  });
+// Cloudinary's Admin API list call takes ~1s round-trip, and the media
+// picker dialog re-fetches on every open. Cache the result for a minute
+// (server-side, shared across requests) and bust it explicitly whenever
+// something uploads or deletes, so browsing the library feels instant while
+// still staying correct right after a change.
+export const listMedia = unstable_cache(
+  async (): Promise<MediaItem[]> => {
+    assertCloudinaryConfigured();
+    const result = await cloudinary.api.resources({
+      type: "upload",
+      resource_type: "image",
+      prefix: `${CLOUDINARY_FOLDER}/`,
+      max_results: 200,
+    });
 
-  return (result.resources as CloudinaryResource[])
-    .map((r) => ({
-      path: r.public_id,
-      url: r.secure_url,
-      contentType: `image/${r.format}`,
-      size: r.bytes,
-      createdAt: r.created_at,
-    }))
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-}
+    return (result.resources as CloudinaryResource[])
+      .map((r) => ({
+        path: r.public_id,
+        url: r.secure_url,
+        contentType: `image/${r.format}`,
+        size: r.bytes,
+        createdAt: r.created_at,
+      }))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  },
+  ["media-list"],
+  { tags: [MEDIA_LIST_TAG], revalidate: 60 },
+);
 
 export async function uploadMedia(buffer: Buffer, filename: string, contentType: string): Promise<MediaItem> {
   assertCloudinaryConfigured();

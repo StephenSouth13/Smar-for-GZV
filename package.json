@@ -7,6 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "firebase:enable-frameworks": "firebase experiments:enable webframeworks",
+    "deploy:hosting": "firebase deploy --only hosting --project gzvmarketing",
+    "deploy:rules": "firebase deploy --only firestore --project gzvmarketing",
+    "deploy": "firebase deploy --project gzvmarketing",
     "create-admin": "tsx --env-file=.env.local scripts/create-admin.ts"
   },
   "dependencies": {

@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export const SOCIAL_PLATFORMS = ["facebook", "zalo", "youtube", "tiktok", "instagram", "linkedin", "website"] as const;
+export const socialLinkSchema = z.object({
+  platform: z.enum(SOCIAL_PLATFORMS).default("website"),
+  url: z.string().default(""),
+});
+export type SocialLink = z.infer<typeof socialLinkSchema>;
+
 export const sectionSchema = z.object({
   id: z.string(),
   type: z.string(),
@@ -107,9 +114,7 @@ export const settingsSchema = z.object({
   contactEmail: z.string().default(""),
   contactPhone: z.string().default(""),
   address: z.string().default(""),
-  socialFacebook: z.string().default(""),
-  socialYoutube: z.string().default(""),
-  socialZalo: z.string().default(""),
+  socialLinks: z.array(socialLinkSchema).default([]),
   headerMenu: z.array(menuItemSchema).default([]),
   projectCategories: z
     .array(categorySchema)

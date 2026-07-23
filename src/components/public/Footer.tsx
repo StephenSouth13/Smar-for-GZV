@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 import { Container } from "./Container";
 import { cld } from "@/lib/image-url";
+import { SOCIAL_META } from "@/lib/social-icons";
 import type { SettingsInput } from "@/lib/schema/content";
 
 const DEFAULT_QUICK_LINKS = [
@@ -18,22 +19,6 @@ const DEFAULT_SERVICE_LINKS = [
   { label: "Dự án Nhân hiệu", href: "/du-an?category=du-an-nhan-hieu" },
   { label: "Dự án Phẩm hiệu", href: "/du-an?category=du-an-pham-hieu" },
 ];
-
-function FacebookIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-      <path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5Z" />
-    </svg>
-  );
-}
-
-function YoutubeIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-      <path d="M21.582 7.186a2.51 2.51 0 0 0-1.768-1.775C18.254 5 12 5 12 5s-6.254 0-7.814.411A2.51 2.51 0 0 0 2.418 7.186 26.18 26.18 0 0 0 2 12a26.18 26.18 0 0 0 .418 4.814 2.51 2.51 0 0 0 1.768 1.775C5.746 19 12 19 12 19s6.254 0 7.814-.411a2.51 2.51 0 0 0 1.768-1.775A26.18 26.18 0 0 0 22 12a26.18 26.18 0 0 0-.418-4.814ZM10 15V9l5.2 3Z" />
-    </svg>
-  );
-}
 
 function FooterLinks({ title, links }: { title: string; links: { label: string; href: string }[] }) {
   return (
@@ -128,40 +113,28 @@ export function Footer({ settings }: { settings: SettingsInput }) {
               </div>
             )}
           </div>
-          <div className="mt-5 flex items-center gap-3">
-            {settings.socialFacebook && (
-              <a
-                href={settings.socialFacebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-brand"
-              >
-                <FacebookIcon />
-              </a>
-            )}
-            {settings.socialYoutube && (
-              <a
-                href={settings.socialYoutube}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-brand"
-              >
-                <YoutubeIcon />
-              </a>
-            )}
-            {settings.socialZalo && (
-              <a
-                href={settings.socialZalo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-9 min-w-9 items-center justify-center rounded-full bg-white/10 px-3 text-xs font-bold transition-colors hover:bg-brand"
-              >
-                Zalo
-              </a>
-            )}
-          </div>
+          {settings.socialLinks.filter((s) => s.url).length > 0 && (
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              {settings.socialLinks
+                .filter((s) => s.url)
+                .map((s) => {
+                  const meta = SOCIAL_META[s.platform];
+                  const Icon = meta.icon;
+                  return (
+                    <a
+                      key={s.platform + s.url}
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={meta.label}
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-brand"
+                    >
+                      <Icon />
+                    </a>
+                  );
+                })}
+            </div>
+          )}
         </div>
       </Container>
 

@@ -1,7 +1,8 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { requireAdmin } from "@/lib/auth/session";
-import { deleteMedia, listMedia, uploadMedia } from "@/lib/data/media";
+import { deleteMedia, listMedia, uploadMedia, MEDIA_LIST_TAG } from "@/lib/data/media";
 
 const MAX_SIZE = 8 * 1024 * 1024; // 8MB
 
@@ -22,6 +23,7 @@ export async function uploadMediaAction(formData: FormData) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const item = await uploadMedia(buffer, file.name, file.type);
+    updateTag(MEDIA_LIST_TAG);
     return { item };
   } catch (err) {
     console.error("uploadMediaAction failed", err);
@@ -32,6 +34,7 @@ export async function uploadMediaAction(formData: FormData) {
 export async function deleteMediaAction(path: string) {
   await requireAdmin();
   await deleteMedia(path);
+  updateTag(MEDIA_LIST_TAG);
 }
 
 export async function listMediaAction() {
