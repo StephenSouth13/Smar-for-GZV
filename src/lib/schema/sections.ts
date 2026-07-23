@@ -21,6 +21,7 @@ export const aboutPreviewDataSchema = z.object({
 
 export const logoGridDataSchema = z.object({
   heading: z.string().default(""),
+  carousel: z.boolean().default(true),
   logos: z
     .array(
       z.object({

@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { ImageField } from "@/components/admin/ImageField";
 import { Field, ListEditor } from "./fields";
 import type { SectionDataMap } from "@/lib/schema/sections";
@@ -17,6 +18,15 @@ export function LogoGridEditor({
       <Field label="Tiêu đề">
         <Input value={data.heading} onChange={(e) => onChange({ ...data, heading: e.target.value })} />
       </Field>
+      <div className="flex items-center justify-between rounded-lg border border-line/70 bg-surface/70 p-4">
+        <div>
+          <div className="font-medium text-ink">Chạy dạng carousel tự động</div>
+          <div className="text-sm text-ink-muted">
+            Bật: logo chạy cuộn ngang liên tục. Tắt: hiển thị dạng lưới tĩnh có tên khách hàng.
+          </div>
+        </div>
+        <Switch checked={data.carousel} onCheckedChange={(carousel) => onChange({ ...data, carousel })} />
+      </div>
       <Field label="Danh sách khách hàng">
         <ListEditor
           items={data.logos}

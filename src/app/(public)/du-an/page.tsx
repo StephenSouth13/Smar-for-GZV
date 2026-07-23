@@ -12,8 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
     {
       title: "Dự án",
-      seoDescription: "Các dự án tiêu biểu GZV đã đồng hành cùng khách hàng.",
-      seoKeywords: "dự án marketing, nhân hiệu, phẩm hiệu, GZV",
+      seoDescription: "Các dự án tiêu biểu GZV đã đồng hành cùng khách hàng trong Nhân hiệu, Phẩm hiệu, Website, Content, Media và Performance.",
+      seoKeywords: "dự án marketing, nhân hiệu, phẩm hiệu, website, content marketing, media, performance, GZV",
+      path: "/du-an",
     },
     settings,
   );

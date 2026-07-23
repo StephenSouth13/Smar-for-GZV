@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       ...post,
       seoDescription: post.seoDescription || post.excerpt,
       ogImageUrl: post.ogImageUrl || post.coverImageUrl,
+      path: `/chia-se/${slug}`,
     },
     settings,
   );

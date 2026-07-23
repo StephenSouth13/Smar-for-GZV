@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       ...project,
       seoDescription: project.seoDescription || project.summary,
       ogImageUrl: project.ogImageUrl || project.coverImageUrl,
+      path: `/du-an/${slug}`,
     },
     settings,
   );

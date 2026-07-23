@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { adminDb } from "@/lib/firebase/admin";
 import type { PostInput } from "@/lib/schema/content";
 
@@ -45,11 +46,13 @@ export async function getPostById(id: string): Promise<PostDoc | null> {
   return toPostDoc(id, doc.data()!);
 }
 
-export async function getPublishedPostBySlug(slug: string): Promise<PostDoc | null> {
+// generateMetadata() and the page body both need this per request; cache()
+// dedupes them into a single Firestore read.
+export const getPublishedPostBySlug = cache(async (slug: string): Promise<PostDoc | null> => {
   const snap = await adminDb.collection("posts").where("slug", "==", slug).where("published", "==", true).limit(1).get();
   if (snap.empty) return null;
   return toPostDoc(snap.docs[0]!.id, snap.docs[0]!.data());
-}
+});
 
 export async function createPost(data: PostInput): Promise<string> {
   const now = new Date().toISOString();

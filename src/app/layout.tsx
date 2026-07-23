@@ -3,6 +3,7 @@ import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { SiteLoader } from "@/components/SiteLoader";
 import { getSiteSettings } from "@/lib/data/settings";
 import { buildMetadata } from "@/lib/seo";
 
@@ -23,14 +24,17 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+
   return (
     <html lang="vi" className={`${beVietnamPro.variable} h-full antialiased`}>
       <body suppressHydrationWarning className="min-h-full flex flex-col bg-background text-foreground">
+        {settings.loadingScreenEnabled && <SiteLoader settings={settings} />}
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster richColors position="top-right" />
       </body>

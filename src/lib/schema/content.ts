@@ -83,6 +83,7 @@ export const categorySchema = z.object({
 export const settingsSchema = z.object({
   siteName: z.string().default("GZV"),
   tagline: z.string().default("Solution For Marketing"),
+  siteUrl: z.string().default("https://marketing.gzv.one"),
   themeColor: z.string().default("#005ba8"),
   themeAccentColor: z.string().default("#ed1c24"),
   themeSurfaceColor: z.string().default("#f3f7fb"),
@@ -93,9 +94,15 @@ export const settingsSchema = z.object({
   logoUrl: z.string().default(""),
   faviconUrl: z.string().default(""),
   ogImageUrl: z.string().default(""),
-  seoTitle: z.string().default(""),
-  seoDescription: z.string().default(""),
-  seoKeywords: z.string().default(""),
+  seoTitle: z.string().default("GZV Marketing - Giải pháp Nhân hiệu và Phẩm hiệu"),
+  seoDescription: z
+    .string()
+    .default(
+      "GZV cung cấp giải pháp marketing toàn diện: chiến lược thương hiệu, nhân hiệu, phẩm hiệu, website, content, media và performance giúp doanh nghiệp tăng trưởng bền vững.",
+    ),
+  seoKeywords: z
+    .string()
+    .default("GZV, marketing, giải pháp marketing, nhân hiệu, phẩm hiệu, thiết kế website, content marketing, media, performance marketing"),
   showHeader: z.boolean().default(true),
   contactEmail: z.string().default(""),
   contactPhone: z.string().default(""),
@@ -120,5 +127,9 @@ export const settingsSchema = z.object({
   footerQuickLinks: z.array(menuItemSchema).default([]),
   footerServiceLinks: z.array(menuItemSchema).default([]),
   showAdminLink: z.boolean().default(true),
+  loadingScreenEnabled: z.boolean().default(false),
+  loadingScreenLogoUrl: z.string().default(""),
+  loadingScreenText: z.string().default(""),
+  loadingScreenEffect: z.enum(["spinner", "pulse", "bar"]).default("spinner"),
 });
 export type SettingsInput = z.infer<typeof settingsSchema>;

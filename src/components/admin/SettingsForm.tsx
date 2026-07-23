@@ -2,13 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Briefcase, Check, Eye, EyeOff, Globe2, Menu, Palette, PanelBottom, Save, Search, Share2 } from "lucide-react";
+import { Briefcase, Check, Eye, EyeOff, Globe2, Loader2, Menu, Palette, PanelBottom, Save, Search, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageField } from "@/components/admin/ImageField";
 import { ListEditor } from "@/components/admin/section-editors/fields";
 import type { SettingsInput } from "@/lib/schema/content";
@@ -171,6 +172,66 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="overflow-hidden border-line/70 bg-white shadow-sm">
+        <CardHeader className="border-b border-line/60 bg-gradient-to-r from-brand/5 via-white to-red-50">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Globe2 className="h-5 w-5 text-brand-dark" />
+            Domain & SEO kỹ thuật
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-5 pt-5">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_360px]">
+            <div className="space-y-1.5">
+              <Label>Domain chính / canonical URL</Label>
+              <Input
+                value={form.siteUrl}
+                onChange={(e) => setForm((f) => ({ ...f, siteUrl: e.target.value }))}
+                placeholder="https://marketing.gzv.one"
+              />
+              <p className="text-sm text-ink-muted">
+                Domain này sẽ được dùng cho canonical, Open Graph, Twitter card, sitemap và robots.
+              </p>
+            </div>
+            <div className="rounded-lg border border-line/70 bg-surface/70 p-4">
+              <div className="text-xs font-bold uppercase tracking-[0.16em] text-brand-dark">DNS hiện đang kiểm tra</div>
+              <div className="mt-3 space-y-2 text-sm">
+                <div className="grid grid-cols-[84px_1fr] gap-2">
+                  <span className="font-semibold text-ink">Type</span>
+                  <span className="font-mono text-ink-muted">CNAME</span>
+                </div>
+                <div className="grid grid-cols-[84px_1fr] gap-2">
+                  <span className="font-semibold text-ink">Host</span>
+                  <span className="font-mono text-ink-muted">marketing</span>
+                </div>
+                <div className="grid grid-cols-[84px_1fr] gap-2">
+                  <span className="font-semibold text-ink">Value</span>
+                  <span className="break-all font-mono text-ink-muted">gzvmarketing.web.app</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DomainLiveCheck siteUrl={form.siteUrl} />
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+              <div className="text-sm font-bold text-emerald-800">DNS đã trỏ</div>
+              <p className="mt-1 text-sm text-emerald-700">
+                <code className="font-mono">marketing.gzv.one</code> đang resolve về Firebase.
+              </p>
+            </div>
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+              <div className="text-sm font-bold text-amber-800">SSL cần xác minh</div>
+              <p className="mt-1 text-sm text-amber-700">HTTPS còn lỗi chứng chỉ nếu Firebase chưa cấp xong cert.</p>
+            </div>
+            <div className="rounded-lg border border-sky-200 bg-sky-50 p-4">
+              <div className="text-sm font-bold text-sky-800">SEO sẵn sàng</div>
+              <p className="mt-1 text-sm text-sky-700">Sitemap, robots, canonical sẽ đi theo domain chính sau khi lưu.</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card className="border-line/70 bg-white shadow-sm">
         <CardHeader className="border-b border-line/60">
@@ -481,12 +542,147 @@ export function SettingsForm({ settings }: { settings: SettingsInput }) {
         </CardContent>
       </Card>
 
+      <Card className="border-line/70 bg-white shadow-sm">
+        <CardHeader className="border-b border-line/60">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Loader2 className="h-5 w-5 text-brand-dark" />
+            Màn hình tải trang
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 pt-5">
+          <div className="flex items-center justify-between gap-4 rounded-lg border border-line/70 bg-surface/70 p-4">
+            <div>
+              <div className="font-medium text-ink">Bật màn hình tải trang</div>
+              <div className="text-sm text-ink-muted">
+                Hiện logo + chữ + hiệu ứng trong lúc trang đang tải, trước khi nội dung hiện ra.
+              </div>
+            </div>
+            <Switch
+              checked={form.loadingScreenEnabled}
+              onCheckedChange={(loadingScreenEnabled) => setForm((f) => ({ ...f, loadingScreenEnabled }))}
+            />
+          </div>
+
+          {form.loadingScreenEnabled && (
+            <>
+              <ImageField
+                aspect={1}
+                label="Logo hiển thị lúc tải (để trống dùng logo header)"
+                value={form.loadingScreenLogoUrl}
+                onChange={(loadingScreenLogoUrl) => setForm((f) => ({ ...f, loadingScreenLogoUrl }))}
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label>Chữ hiển thị</Label>
+                  <Input
+                    placeholder="Đang tải..."
+                    value={form.loadingScreenText}
+                    onChange={(e) => setForm((f) => ({ ...f, loadingScreenText: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Hiệu ứng</Label>
+                  <Select
+                    value={form.loadingScreenEffect}
+                    onValueChange={(effect) => effect && setForm((f) => ({ ...f, loadingScreenEffect: effect as SettingsInput["loadingScreenEffect"] }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="spinner">Vòng xoay</SelectItem>
+                      <SelectItem value="pulse">Chấm nhấp nháy</SelectItem>
+                      <SelectItem value="bar">Thanh chạy</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
       <div className="sticky bottom-4 z-10 flex justify-end">
         <Button onClick={handleSave} disabled={saving} className="bg-brand px-6 shadow-lg shadow-brand/25 hover:bg-brand-dark">
           <Save className="mr-1 h-4 w-4" />
           {saving ? "Đang lưu..." : "Lưu cài đặt"}
         </Button>
       </div>
+    </div>
+  );
+}
+
+type DomainCheckResult = {
+  hostname: string;
+  dnsReady: boolean;
+  httpsReady: boolean;
+  diagnosis: string;
+  records: {
+    cname: string[];
+    a: string[];
+    aaaa: string[];
+  };
+  http: { status?: number; location?: string | null; server?: string | null; error?: string };
+  https: { status?: number; location?: string | null; server?: string | null; error?: string };
+  checkedAt: string;
+};
+
+function DomainLiveCheck({ siteUrl }: { siteUrl: string }) {
+  const [checking, startChecking] = useTransition();
+  const [result, setResult] = useState<DomainCheckResult | null>(null);
+
+  function check() {
+    startChecking(async () => {
+      const res = await fetch(`/api/domain-check?url=${encodeURIComponent(siteUrl || "https://marketing.gzv.one")}`, {
+        cache: "no-store",
+      });
+      setResult(await res.json());
+    });
+  }
+
+  return (
+    <div className="rounded-lg border border-line/70 bg-white p-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div className="text-sm font-bold text-ink">Kiểm tra live domain</div>
+          <p className="mt-1 text-sm text-ink-muted">Chạy DNS, HTTP và HTTPS ngay từ server local.</p>
+        </div>
+        <Button type="button" variant="outline" size="sm" onClick={check} disabled={checking}>
+          {checking ? "Đang kiểm tra..." : "Kiểm tra ngay"}
+        </Button>
+      </div>
+
+      {result && (
+        <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-[220px_1fr]">
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center justify-between rounded-md bg-surface px-3 py-2">
+              <span className="font-semibold text-ink">DNS</span>
+              <span className={result.dnsReady ? "font-bold text-emerald-700" : "font-bold text-amber-700"}>
+                {result.dnsReady ? "Đã trỏ" : "Chưa thấy"}
+              </span>
+            </div>
+            <div className="flex items-center justify-between rounded-md bg-surface px-3 py-2">
+              <span className="font-semibold text-ink">HTTPS</span>
+              <span className={result.httpsReady ? "font-bold text-emerald-700" : "font-bold text-amber-700"}>
+                {result.https.status ? result.https.status : "Lỗi"}
+              </span>
+            </div>
+            <div className="flex items-center justify-between rounded-md bg-surface px-3 py-2">
+              <span className="font-semibold text-ink">HTTP</span>
+              <span className="font-bold text-ink-muted">{result.http.status ? result.http.status : "Lỗi"}</span>
+            </div>
+          </div>
+          <div className="rounded-md bg-surface p-3 text-sm">
+            <p className="font-medium text-ink">{result.diagnosis}</p>
+            <div className="mt-3 space-y-1 font-mono text-xs text-ink-muted">
+              {result.records.cname.length > 0 && <div>CNAME: {result.records.cname.join(", ")}</div>}
+              {result.records.a.length > 0 && <div>A: {result.records.a.join(", ")}</div>}
+              {result.records.aaaa.length > 0 && <div>AAAA: {result.records.aaaa.join(", ")}</div>}
+              {result.https.error && <div>HTTPS error: {result.https.error}</div>}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

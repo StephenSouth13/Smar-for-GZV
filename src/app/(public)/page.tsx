@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [page, settings] = await Promise.all([getPublishedPageBySlug("home"), getSiteSettings()]);
-  return buildMetadata(page ?? {}, settings);
+  return buildMetadata({ ...(page ?? {}), path: "/" }, settings);
 }
 
 export default async function HomePage() {

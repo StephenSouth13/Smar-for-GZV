@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const [page, settings] = await Promise.all([getPublishedPageBySlug(slug), getSiteSettings()]);
   if (!page) return buildMetadata({}, settings);
-  return buildMetadata(page, settings);
+  return buildMetadata({ ...page, path: `/${slug}` }, settings);
 }
 
 export default async function GenericPage({ params }: { params: Promise<{ slug: string }> }) {

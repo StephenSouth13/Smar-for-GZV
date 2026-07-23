@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { adminDb } from "@/lib/firebase/admin";
 import type { ProjectInput } from "@/lib/schema/content";
 
@@ -50,11 +51,13 @@ export async function getProjectById(id: string): Promise<ProjectDoc | null> {
   return toProjectDoc(id, doc.data()!);
 }
 
-export async function getPublishedProjectBySlug(slug: string): Promise<ProjectDoc | null> {
+// generateMetadata() and the page body both need this per request; cache()
+// dedupes them into a single Firestore read.
+export const getPublishedProjectBySlug = cache(async (slug: string): Promise<ProjectDoc | null> => {
   const snap = await adminDb.collection("projects").where("slug", "==", slug).where("published", "==", true).limit(1).get();
   if (snap.empty) return null;
   return toProjectDoc(snap.docs[0]!.id, snap.docs[0]!.data());
-}
+});
 
 export async function createProject(data: ProjectInput): Promise<string> {
   const now = new Date().toISOString();

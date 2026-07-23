@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { adminDb } from "@/lib/firebase/admin";
 import { sectionDataSchemas, type Section, type SectionType } from "@/lib/schema/sections";
 
@@ -52,11 +53,13 @@ function toPageDoc(slug: string, data: FirebaseFirestore.DocumentData): PageDoc 
   };
 }
 
-export async function getPageBySlug(slug: string): Promise<PageDoc | null> {
+// generateMetadata() and the page body both need this per request; cache()
+// dedupes them into a single Firestore read.
+export const getPageBySlug = cache(async (slug: string): Promise<PageDoc | null> => {
   const doc = await adminDb.collection("pages").doc(slug).get();
   if (!doc.exists) return null;
   return toPageDoc(slug, doc.data()!);
-}
+});
 
 export async function getPublishedPageBySlug(slug: string): Promise<PageDoc | null> {
   const page = await getPageBySlug(slug);
