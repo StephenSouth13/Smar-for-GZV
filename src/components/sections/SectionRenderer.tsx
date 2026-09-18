@@ -14,12 +14,6 @@ import { Testimonials } from "./Testimonials";
 export function SectionRenderer({ section }: { section: Section }) {
   if (section.hidden) return null;
 
-  const style = {
-    ...(section.backgroundColor ? { "--surface": section.backgroundColor, backgroundColor: section.backgroundColor } : {}),
-    ...(section.textColor ? { "--ink": section.textColor, color: section.textColor } : {}),
-    ...(section.accentColor ? { "--brand": section.accentColor, "--brand-dark": section.accentColor } : {}),
-  } as React.CSSProperties;
-
   let content: React.ReactNode = null;
 
   switch (section.type) {
@@ -60,11 +54,7 @@ export function SectionRenderer({ section }: { section: Section }) {
       return null;
   }
 
-  return (
-    <div className="cms-section-shell" style={style}>
-      {content}
-    </div>
-  );
+  return <div className="cms-section-shell">{content}</div>;
 }
 
 export function SectionList({ sections }: { sections: Section[] }) {

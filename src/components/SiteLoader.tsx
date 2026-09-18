@@ -32,7 +32,7 @@ export function SiteLoader({ settings }: { settings: SettingsInput }) {
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-5 bg-white transition-opacity duration-300"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-5 bg-background text-foreground transition-all duration-300"
       aria-hidden
     >
       {logoUrl ? (

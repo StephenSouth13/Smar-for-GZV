@@ -1,36 +1,60 @@
-import { darken, isHexColor } from "@/lib/theme-color";
+import { darken } from "@/lib/theme-color";
 import type { SettingsInput } from "@/lib/schema/content";
 
-function safeColor(value: string, fallback: string) {
-  return isHexColor(value) ? value : fallback;
-}
-
 export function ThemeVars({ settings }: { settings: SettingsInput }) {
-  const brand = safeColor(settings.themeColor, "#005ba8");
+  void settings;
+
+  const brand = "#ed1c24";
   const brandDark = darken(brand, 0.18);
-  const accent = safeColor(settings.themeAccentColor, "#ed1c24");
-  const surface = safeColor(settings.themeSurfaceColor, "#f3f7fb");
-  const ink = safeColor(settings.themeInkColor, "#13263a");
-  const muted = safeColor(settings.themeMutedColor, "#64748b");
-  const line = safeColor(settings.themeLineColor, "#d8e3ee");
-  const radius = Math.max(4, Math.min(24, settings.themeRadius || 10));
+  const accent = "#ff3131";
+  const radius = 8;
 
   const css = `
     :root {
       --brand: ${brand};
       --brand-dark: ${brandDark};
       --brand-accent: ${accent};
-      --surface: ${surface};
-      --ink: ${ink};
-      --ink-muted: ${muted};
-      --line: ${line};
+      --surface: #f6f6f7;
+      --ink: #161616;
+      --ink-muted: #666a73;
+      --line: #dedfe3;
+      --background: #ffffff;
+      --foreground: #161616;
+      --card: #ffffff;
+      --card-foreground: #161616;
+      --popover: #ffffff;
+      --popover-foreground: #161616;
       --primary: ${brand};
       --ring: ${brand};
-      --accent: ${surface};
-      --accent-foreground: ${ink};
-      --border: ${line};
-      --input: ${line};
+      --secondary: #f2f2f3;
+      --secondary-foreground: #161616;
+      --muted: #f2f2f3;
+      --muted-foreground: #666a73;
+      --accent: #f2f2f3;
+      --accent-foreground: #161616;
+      --border: #dedfe3;
+      --input: #dedfe3;
       --radius: ${radius / 16}rem;
+    }
+    .dark {
+      --surface: #111111;
+      --ink: #f8fafc;
+      --ink-muted: #a7adb7;
+      --line: #2a2a2a;
+      --background: #050505;
+      --foreground: #f8fafc;
+      --card: #111111;
+      --card-foreground: #f8fafc;
+      --popover: #111111;
+      --popover-foreground: #f8fafc;
+      --secondary: #181818;
+      --secondary-foreground: #f8fafc;
+      --muted: #181818;
+      --muted-foreground: #a7adb7;
+      --accent: #181818;
+      --accent-foreground: #f8fafc;
+      --border: #2a2a2a;
+      --input: #2a2a2a;
     }
   `;
 

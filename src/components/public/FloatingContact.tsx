@@ -1,4 +1,4 @@
-import { Phone, MessageCircle } from "lucide-react";
+import { MessageCircle, Phone } from "lucide-react";
 import type { SettingsInput } from "@/lib/schema/content";
 
 export function FloatingContact({ settings }: { settings: SettingsInput }) {
@@ -10,7 +10,7 @@ export function FloatingContact({ settings }: { settings: SettingsInput }) {
       {settings.contactPhone && (
         <a
           href={`tel:${settings.contactPhone}`}
-          className="flex h-13 w-13 items-center justify-center rounded-full bg-brand text-white shadow-lg shadow-brand/40 hover:scale-105 transition-transform animate-pulse"
+          className="flex h-13 w-13 animate-pulse items-center justify-center rounded-full bg-brand text-white shadow-lg shadow-brand/40 transition-transform hover:scale-105"
           style={{ height: 52, width: 52 }}
           aria-label="Gọi điện"
         >
@@ -22,7 +22,7 @@ export function FloatingContact({ settings }: { settings: SettingsInput }) {
           href={zalo}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center rounded-full bg-[#0068ff] text-white shadow-lg hover:scale-105 transition-transform"
+          className="flex items-center justify-center rounded-full bg-[#0068ff] text-white shadow-lg transition-transform hover:scale-105"
           style={{ height: 52, width: 52 }}
           aria-label="Chat Zalo"
         >

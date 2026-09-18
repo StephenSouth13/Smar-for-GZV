@@ -11,9 +11,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   return buildMetadata(
     {
-      title: "Chia sẻ",
-      seoDescription: "Kiến thức, góc nhìn và cập nhật mới nhất về marketing, thương hiệu, content, media và tăng trưởng từ GZV.",
-      seoKeywords: "marketing, kiến thức marketing, chia sẻ GZV, thương hiệu, content marketing, media, performance",
+      title: "Tin tức",
+      seoDescription: "Cập nhật tin tức, kiến thức và câu chuyện truyền cảm hứng từ GZV.",
+      seoKeywords: "tin tức GZV, marketing, sales, digital transformation, education, events",
       path: "/chia-se",
     },
     settings,
@@ -24,13 +24,13 @@ export default async function PostsPage() {
   const [posts, settings] = await Promise.all([listPosts({ publishedOnly: true }), getSiteSettings()]);
 
   return (
-    <div className="bg-surface/60">
-      <section className="border-b border-line/70 bg-white py-14 sm:py-18">
+    <div className="bg-black">
+      <section className="border-b border-white/10 bg-black py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <span className="text-sm font-semibold uppercase tracking-[0.18em] text-brand-dark">Chia sẻ</span>
-            <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">Kiến thức & cập nhật</h1>
-            <p className="mt-4 text-base leading-7 text-ink-muted">Góc nhìn và kinh nghiệm marketing từ đội ngũ GZV.</p>
+            <span className="text-sm font-semibold uppercase tracking-[0.22em] text-brand-accent">Tin tức mới nhất</span>
+            <h1 className="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl">Kiến thức & cập nhật</h1>
+            <p className="mt-4 text-base leading-7 text-white/66">Cập nhật tin tức, kiến thức và câu chuyện truyền cảm hứng.</p>
           </div>
         </Container>
       </section>

@@ -12,8 +12,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
     {
       title: "Dự án",
-      seoDescription: "Các dự án tiêu biểu GZV đã đồng hành cùng khách hàng qua từng danh mục: Nhân hiệu, Phẩm hiệu, Thương hiệu, Website, Content, Media và Performance.",
-      seoKeywords: "dự án marketing, nhân hiệu, phẩm hiệu, thương hiệu, website, content marketing, media, performance, GZV",
+      seoDescription: "Những chiến dịch và dự án tiêu biểu do GZV cùng đối tác triển khai.",
+      seoKeywords: "dự án GZV, marketing, sales, digital transformation, events, education",
       path: "/du-an",
     },
     settings,
@@ -32,14 +32,14 @@ export default async function ProjectsPage({
   ]);
 
   return (
-    <div className="bg-surface/60">
-      <section className="border-b border-line/70 bg-white py-14 sm:py-18">
+    <div className="bg-black">
+      <section className="border-b border-white/10 bg-black py-16 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <span className="text-sm font-semibold uppercase tracking-[0.18em] text-brand-dark">Dự án</span>
-            <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">Dự án tiêu biểu</h1>
-            <p className="mt-4 text-base leading-7 text-ink-muted">
-              Khám phá các dự án theo danh mục Nhân hiệu, Phẩm hiệu, Thương hiệu và nhóm dịch vụ triển khai.
+            <span className="text-sm font-semibold uppercase tracking-[0.22em] text-brand-accent">Dự án đã triển khai</span>
+            <h1 className="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl">Dự án tiêu biểu</h1>
+            <p className="mt-4 text-base leading-7 text-white/66">
+              Những chiến dịch và dự án tiêu biểu do GZV cùng đối tác triển khai.
             </p>
           </div>
         </Container>

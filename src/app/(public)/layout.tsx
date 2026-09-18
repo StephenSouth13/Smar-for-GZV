@@ -13,7 +13,7 @@ export default async function PublicLayout({ children }: { children: React.React
   const settings = await getSiteSettings();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="site-public flex min-h-screen flex-col bg-background text-foreground transition-colors duration-300">
       <ThemeVars settings={settings} />
       {settings.showHeader && <Header settings={settings} />}
       <main className="flex-1">{children}</main>

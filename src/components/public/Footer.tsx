@@ -7,10 +7,11 @@ import { SOCIAL_META } from "@/lib/social-icons";
 import type { SettingsInput } from "@/lib/schema/content";
 
 const DEFAULT_QUICK_LINKS = [
-  { label: "Trang chủ", href: "/" },
   { label: "Giới thiệu", href: "/gioi-thieu" },
+  { label: "Dịch vụ", href: "/gioi-thieu" },
   { label: "Dự án", href: "/du-an" },
-  { label: "Chia sẻ", href: "/chia-se" },
+  { label: "GZVers", href: "/gioi-thieu" },
+  { label: "Tin tức", href: "/chia-se" },
   { label: "Liên hệ", href: "/lien-he" },
 ];
 
@@ -20,7 +21,7 @@ function FooterLinks({ title, links }: { title: string; links: { label: string; 
       <div className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-white">{title}</div>
       <div className="space-y-2.5">
         {links.map((item) => (
-          <Link key={`${item.label}-${item.href}`} href={item.href} className="block text-sm text-white/70 transition-colors hover:text-white">
+          <Link key={`${item.label}-${item.href}`} href={item.href} className="block text-sm text-white/65 transition-colors hover:text-brand-accent">
             {item.label}
           </Link>
         ))}
@@ -33,30 +34,32 @@ export function Footer({ settings }: { settings: SettingsInput }) {
   const year = new Date().getFullYear();
   const quickLinks = settings.footerQuickLinks.length > 0 ? settings.footerQuickLinks : settings.headerMenu.length > 0 ? settings.headerMenu : DEFAULT_QUICK_LINKS;
   const defaultServiceLinks = [
-    { label: "Dự án nổi bật", href: "/du-an" },
-    ...settings.projectCategories.map((category) => ({ label: category.label, href: `/du-an?category=${category.slug}` })),
+    { label: "Marketing & Branding", href: "/gioi-thieu" },
+    { label: "Sales & Phát triển doanh số", href: "/gioi-thieu" },
+    { label: "Digital Transformation", href: "/gioi-thieu" },
+    { label: "Education & Events", href: "/gioi-thieu" },
   ];
   const serviceLinks = settings.footerServiceLinks.length > 0 ? settings.footerServiceLinks : defaultServiceLinks;
   const footerLogo = settings.footerLogoUrl || settings.logoUrl;
   const description =
     settings.footerDescription ||
     settings.footerText ||
-    "GZV đồng hành cùng doanh nghiệp xây dựng thương hiệu, nội dung và hiệu quả tăng trưởng bền vững.";
-  const copyright = settings.footerCopyright || `© ${year} ${settings.siteName}. All rights reserved.`;
+    "GZV Center - Hệ sinh thái đào tạo, tư vấn và triển khai dự án thực chiến.";
+  const copyright = settings.footerCopyright || `© ${year} GZV Center. All rights reserved.`;
 
   return (
-    <footer className="bg-[#07182a] text-white/75">
+    <footer className="border-t border-white/10 bg-black text-white/75">
       {(settings.footerHeadline || settings.footerCtaText) && (
         <div className="border-b border-white/10">
           <Container className="flex flex-col gap-4 py-8 md:flex-row md:items-center md:justify-between">
             <div>
-              <div className="text-xl font-extrabold text-white md:text-2xl">{settings.footerHeadline || "Sẵn sàng nâng cấp thương hiệu?"}</div>
-              <p className="mt-1 max-w-2xl text-sm text-white/65">{settings.tagline}</p>
+              <div className="text-xl font-extrabold text-white md:text-2xl">{settings.footerHeadline || "Sẵn sàng đồng hành cùng GZV?"}</div>
+              <p className="mt-1 max-w-2xl text-sm text-white/60">{settings.tagline}</p>
             </div>
             {settings.footerCtaText && (
               <Link
                 href={settings.footerCtaHref || "/lien-he"}
-                className="inline-flex w-fit items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-bold text-white shadow-lg shadow-brand/20 transition-colors hover:bg-brand-dark"
+                className="inline-flex w-fit items-center gap-2 rounded-md bg-brand px-5 py-3 text-sm font-bold text-white shadow-lg shadow-brand/20 transition-colors hover:bg-brand-dark"
               >
                 {settings.footerCtaText}
                 <ArrowRight className="h-4 w-4" />
@@ -75,40 +78,40 @@ export function Footer({ settings }: { settings: SettingsInput }) {
                 alt={settings.siteName}
                 width={160}
                 height={80}
-                className="h-14 w-auto rounded-md bg-white object-contain p-2"
+                className="h-14 w-auto object-contain"
                 unoptimized
               />
             ) : (
-              <Image src="/gzv-logo.png" alt={settings.siteName} width={160} height={80} className="h-14 w-auto rounded-md bg-white object-contain p-2" unoptimized />
+              <Image src="/gzv-logo.png" alt={settings.siteName} width={160} height={80} className="h-14 w-auto object-contain" unoptimized />
             )}
           </Link>
           <div className="mt-5 text-lg font-extrabold text-white">{settings.siteName}</div>
-          <p className="mt-2 max-w-sm text-sm leading-6 text-white/68">{description}</p>
+          <p className="mt-2 max-w-sm text-sm leading-6 text-white/65">{description}</p>
+          {settings.address && (
+            <div className="mt-5 flex items-start gap-2.5 text-sm text-white/65">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent" />
+              <span>{settings.address}</span>
+            </div>
+          )}
         </div>
 
-        <FooterLinks title="Liên kết" links={quickLinks} />
+        <FooterLinks title="Liên kết nhanh" links={quickLinks} />
         <FooterLinks title="Dịch vụ" links={serviceLinks} />
 
         <div>
-          <div className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-white">Liên hệ</div>
+          <div className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-white">Liên hệ GZV</div>
           <div className="space-y-3 text-sm">
             {settings.contactEmail && (
               <a href={`mailto:${settings.contactEmail}`} className="flex items-center gap-2.5 transition-colors hover:text-white">
-                <Mail className="h-4 w-4 shrink-0 text-brand" />
+                <Mail className="h-4 w-4 shrink-0 text-brand-accent" />
                 {settings.contactEmail}
               </a>
             )}
             {settings.contactPhone && (
               <a href={`tel:${settings.contactPhone}`} className="flex items-center gap-2.5 transition-colors hover:text-white">
-                <Phone className="h-4 w-4 shrink-0 text-brand" />
+                <Phone className="h-4 w-4 shrink-0 text-brand-accent" />
                 {settings.contactPhone}
               </a>
-            )}
-            {settings.address && (
-              <div className="flex items-start gap-2.5">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
-                <span>{settings.address}</span>
-              </div>
             )}
           </div>
           {settings.socialLinks.filter((s) => s.url).length > 0 && (
@@ -125,7 +128,7 @@ export function Footer({ settings }: { settings: SettingsInput }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={meta.label}
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-brand"
+                      className="flex h-9 w-9 items-center justify-center rounded-md bg-white/10 transition-colors hover:bg-brand"
                     >
                       <Icon />
                     </a>

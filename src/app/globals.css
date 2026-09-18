@@ -56,32 +56,34 @@
 }
 
 :root {
-  /* GZV brand palette, matched to the smar.vn theme reference */
-  --brand: #39b54a;
-  --brand-dark: #2c9a3d;
-  --ink: #32373c;
-  --ink-muted: #69727d;
-  --line: #c2cbd2;
-  --surface: #f6f8f7;
+  color-scheme: light;
+  /* GZV red/white light theme */
+  --brand: #ed1c24;
+  --brand-dark: #b70f18;
+  --brand-accent: #ff3131;
+  --ink: #161616;
+  --ink-muted: #666a73;
+  --line: #dedfe3;
+  --surface: #f6f6f7;
 
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: #39b54a;
+  --background: #ffffff;
+  --foreground: #161616;
+  --card: #ffffff;
+  --card-foreground: #161616;
+  --popover: #ffffff;
+  --popover-foreground: #161616;
+  --primary: #ed1c24;
   --primary-foreground: #ffffff;
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --secondary: #f2f2f3;
+  --secondary-foreground: #161616;
+  --muted: #f2f2f3;
+  --muted-foreground: #666a73;
+  --accent: #f2f2f3;
+  --accent-foreground: #161616;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: #dedfe3;
+  --input: #dedfe3;
+  --ring: #ed1c24;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -99,24 +101,32 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: #34d058;
-  --primary-foreground: #052e12;
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  color-scheme: dark;
+  --brand: #ed1c24;
+  --brand-dark: #b70f18;
+  --brand-accent: #ff3131;
+  --ink: #f8fafc;
+  --ink-muted: #a7adb7;
+  --line: #2a2a2a;
+  --surface: #111111;
+  --background: #050505;
+  --foreground: #f8fafc;
+  --card: #111111;
+  --card-foreground: #f8fafc;
+  --popover: #111111;
+  --popover-foreground: #f8fafc;
+  --primary: #ed1c24;
+  --primary-foreground: #ffffff;
+  --secondary: #181818;
+  --secondary-foreground: #f8fafc;
+  --muted: #181818;
+  --muted-foreground: #a7adb7;
+  --accent: #181818;
+  --accent-foreground: #f8fafc;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: #2a2a2a;
+  --input: #2a2a2a;
+  --ring: #ed1c24;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -176,4 +186,48 @@
 .cms-section-shell > section {
   background: transparent;
   color: inherit;
+}
+
+/* Public pages were authored against the dark GZV palette. These scoped
+   mappings let those sections inherit the semantic light palette cleanly. */
+html:not(.dark) .site-public .bg-black,
+html:not(.dark) .site-public .bg-\[\#050505\],
+html:not(.dark) .site-public .bg-\[\#0b0b0b\] {
+  background-color: var(--background);
+}
+
+html:not(.dark) .site-public .bg-\[\#111111\] {
+  background-color: var(--card);
+}
+
+html:not(.dark) .site-public .text-white {
+  color: var(--ink);
+}
+
+html:not(.dark) .site-public [class*="text-white/"] {
+  color: var(--ink-muted);
+}
+
+html:not(.dark) .site-public [class*="border-white/"] {
+  border-color: var(--line);
+}
+
+html:not(.dark) .site-public [class*="bg-white/"] {
+  background-color: var(--surface);
+}
+
+html:not(.dark) .site-public .bg-brand.text-white,
+html:not(.dark) .site-public [class*="bg-brand"].text-white,
+html:not(.dark) .site-public .bg-brand .text-white,
+html:not(.dark) .site-public .theme-on-brand,
+html:not(.dark) .site-public .theme-on-brand [class*="text-white"],
+html:not(.dark) .site-public .bg-\[\#0068ff\].text-white {
+  color: #ffffff;
+}
+
+html:not(.dark) .site-public .prose-invert {
+  --tw-prose-body: var(--ink-muted);
+  --tw-prose-headings: var(--ink);
+  --tw-prose-bold: var(--ink);
+  --tw-prose-links: var(--brand);
 }

@@ -22,7 +22,7 @@ export function Hero({ data }: { data: SectionDataMap["hero"] }) {
     );
 
     return (
-      <section className="bg-white">
+      <section className="bg-black">
         {data.imageFullBleed ? banner : <Container className="px-0 sm:px-0 lg:px-0">{banner}</Container>}
       </section>
     );
@@ -30,28 +30,29 @@ export function Hero({ data }: { data: SectionDataMap["hero"] }) {
 
   return (
     <section
-      className="relative overflow-hidden bg-ink text-white"
+      className="relative overflow-hidden bg-black text-white"
       style={
         data.backgroundImageUrl
           ? {
-              backgroundImage: `linear-gradient(180deg, rgba(50,55,60,.88), rgba(50,55,60,.92)), url(${cld(data.backgroundImageUrl, { width: 1920, height: 1080 })})`,
+              backgroundImage: `linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,.92)), url(${cld(data.backgroundImageUrl, { width: 1920, height: 1080 })})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }
           : undefined
       }
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(57,181,74,.25),transparent_45%)]" />
-      <Container className="relative py-24 sm:py-32 text-center">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(237,28,36,.28),transparent_34%),linear-gradient(135deg,rgba(237,28,36,.12),transparent_42%)]" />
+      <Container className="relative py-24 text-center sm:py-32">
+        <div className="mb-5 text-xs font-bold uppercase tracking-[0.32em] text-brand-accent">The Next-Gen Company</div>
         <h1
-          className="mx-auto max-w-3xl text-3xl sm:text-5xl font-bold leading-tight tracking-tight"
+          className="mx-auto max-w-4xl text-4xl font-black leading-tight tracking-tight sm:text-6xl lg:text-7xl"
           style={data.headingColor ? { color: data.headingColor } : undefined}
         >
           {data.heading}
         </h1>
         {data.subheading && (
           <p
-            className="mx-auto mt-5 max-w-2xl text-base sm:text-lg text-white/80"
+            className="mx-auto mt-5 max-w-2xl text-base leading-7 text-white/72 sm:text-lg"
             style={data.subheadingColor ? { color: data.subheadingColor } : undefined}
           >
             {data.subheading}
@@ -61,7 +62,7 @@ export function Hero({ data }: { data: SectionDataMap["hero"] }) {
           <div className="mt-9">
             <Link
               href={data.ctaLink || "#"}
-              className="inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition-transform hover:scale-[1.03] hover:bg-brand-dark"
+              className="inline-flex items-center gap-2 rounded-md bg-brand px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-brand/30 transition-colors hover:bg-brand-dark"
             >
               {data.ctaText}
               <ArrowRight className="h-4 w-4" />

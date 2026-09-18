@@ -10,8 +10,7 @@ import type { SettingsInput } from "@/lib/schema/content";
 export function PostFilterGrid({ posts, categories = [] }: { posts: PostDoc[]; categories?: SettingsInput["postCategories"] }) {
   const usedCategorySlugs = useMemo(() => Array.from(new Set(posts.map((post) => post.category).filter(Boolean))), [posts]);
   const usedCategories = useMemo(
-    () =>
-      usedCategorySlugs.map((slug) => categories.find((category) => category.slug === slug) || { slug, label: slug }),
+    () => usedCategorySlugs.map((slug) => categories.find((category) => category.slug === slug) || { slug, label: slug }),
     [usedCategorySlugs, categories],
   );
   const [activeCategory, setActiveCategory] = useState("");
@@ -26,18 +25,18 @@ export function PostFilterGrid({ posts, categories = [] }: { posts: PostDoc[]; c
 
   return (
     <div className="space-y-8">
-      <div className="rounded-xl border border-line/70 bg-white p-4 shadow-sm sm:p-5">
+      <div className="rounded-md border border-white/10 bg-[#111111] p-4 shadow-sm sm:p-5">
         <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Tìm bài viết, chuyên mục, tác giả..."
-              className="h-11 w-full rounded-lg border border-line/70 bg-surface pl-10 pr-3 text-sm outline-none transition-colors focus:border-brand/60 focus:bg-white"
+              placeholder="Tìm bài viết..."
+              className="h-11 w-full rounded-md border border-white/10 bg-black pl-10 pr-3 text-sm text-white outline-none transition-colors placeholder:text-white/38 focus:border-brand/70"
             />
           </div>
-          <div className="flex items-center gap-2 text-sm font-medium text-ink-muted">
+          <div className="flex items-center gap-2 text-sm font-medium text-white/55">
             <SlidersHorizontal className="h-4 w-4" />
             {visible.length}/{posts.length} bài viết
           </div>
@@ -48,8 +47,8 @@ export function PostFilterGrid({ posts, categories = [] }: { posts: PostDoc[]; c
             <button
               onClick={() => setActiveCategory("")}
               className={cn(
-                "inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition-colors",
-                activeCategory === "" ? "border-brand bg-brand text-white" : "border-line/70 bg-white text-ink hover:border-brand/50",
+                "inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-semibold transition-colors",
+                activeCategory === "" ? "border-brand bg-brand text-white" : "border-white/10 bg-black text-white/70 hover:border-brand/60 hover:text-white",
               )}
             >
               <Newspaper className="h-4 w-4" />
@@ -60,10 +59,8 @@ export function PostFilterGrid({ posts, categories = [] }: { posts: PostDoc[]; c
                 key={category.slug}
                 onClick={() => setActiveCategory(category.slug)}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition-colors",
-                  activeCategory === category.slug
-                    ? "border-brand bg-brand text-white"
-                    : "border-line/70 bg-white text-ink hover:border-brand/50",
+                  "inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-semibold transition-colors",
+                  activeCategory === category.slug ? "border-brand bg-brand text-white" : "border-white/10 bg-black text-white/70 hover:border-brand/60 hover:text-white",
                 )}
               >
                 <Newspaper className="h-4 w-4" />
@@ -75,7 +72,7 @@ export function PostFilterGrid({ posts, categories = [] }: { posts: PostDoc[]; c
       </div>
 
       {visible.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-line bg-white py-16 text-center text-ink-muted">
+        <div className="rounded-md border border-dashed border-white/15 bg-[#111111] py-16 text-center text-white/55">
           Chưa có bài viết phù hợp.
         </div>
       ) : (

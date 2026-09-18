@@ -4,6 +4,7 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { SiteLoader } from "@/components/SiteLoader";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { getSiteSettings } from "@/lib/data/settings";
 import { buildMetadata } from "@/lib/seo";
 
@@ -32,11 +33,13 @@ export default async function RootLayout({
   const settings = await getSiteSettings();
 
   return (
-    <html lang="vi" className={`${montserrat.variable} h-full antialiased`}>
+    <html lang="vi" className={`${montserrat.variable} h-full antialiased`} suppressHydrationWarning>
       <body suppressHydrationWarning className="min-h-full flex flex-col bg-background text-foreground">
-        {settings.loadingScreenEnabled && <SiteLoader settings={settings} />}
-        <TooltipProvider>{children}</TooltipProvider>
-        <Toaster richColors position="top-right" />
+        <ThemeProvider>
+          {settings.loadingScreenEnabled && <SiteLoader settings={settings} />}
+          <TooltipProvider>{children}</TooltipProvider>
+          <Toaster richColors position="top-right" />
+        </ThemeProvider>
       </body>
     </html>
   );
