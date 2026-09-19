@@ -7,13 +7,14 @@ type Logo = SectionDataMap["logoGrid"]["logos"][number];
 
 function LogoTile({ logo, compact = false }: { logo: Logo; compact?: boolean }) {
   const content = (
-    <div className={compact ? "flex h-28 w-56 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white px-7" : "group flex h-full flex-col overflow-hidden rounded-md border border-white/10 bg-[#111111] transition-all hover:-translate-y-1 hover:border-brand/60"}>
-      <div className={compact ? "relative h-16 w-full" : "relative flex h-40 items-center justify-center bg-white p-7 sm:h-44"}>
+    <div className={compact ? "flex h-36 w-72 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white px-5 sm:w-80" : "group flex h-full flex-col overflow-hidden rounded-md border border-white/10 bg-[#111111] transition-all hover:-translate-y-1 hover:border-brand/60"}>
+      <div className={compact ? "relative h-24 w-full" : "relative flex h-40 items-center justify-center bg-white p-7 sm:h-44"}>
         <Image
-          src={cld(logo.imageUrl, { width: compact ? 320 : 520, height: compact ? 128 : 260, crop: "fit" })}
+          src={cld(logo.imageUrl, { width: compact ? 640 : 520, height: compact ? 240 : 260, crop: "fit" })}
           alt={logo.name || "Logo khách hàng"}
           fill
-          className="object-contain p-7 transition-transform duration-300 group-hover:scale-105"
+          sizes={compact ? "320px" : "(max-width: 640px) 100vw, 20vw"}
+          className={`${compact ? "p-2" : "p-7"} object-contain transition-transform duration-300 group-hover:scale-105`}
           unoptimized
         />
       </div>
